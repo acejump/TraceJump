@@ -1,12 +1,14 @@
 # TraceJump
 
-Search for *anything* on the screen. Really... anything.
+Mixed reality semantic web navigator.
 
 ## Running
 
 ```
 git clone https://github.com/acejump/tracejump && cd tracejump && ./gradlew run
 ```
+
+Press <kbd>Ctrl</kbd>+<kbd>\\</kbd> to activate TraceJump, then either (1) click on a highlighted region or (2) use the adjacent two-character tag to jump into the semantic web.
 
 ## To Do
 
