@@ -1,20 +1,21 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.3.50"
-    application
+  kotlin("jvm") version "1.3.50"
+  id("org.openjfx.javafxplugin") version "0.0.8"
+  application
 }
 
 group = "org.example"
 version = "1.0-SNAPSHOT"
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-      compile("org.bytedeco:javacv-platform:1.5.1")
+  implementation(kotlin("stdlib-jdk8"))
+  compile("org.bytedeco:javacv-platform:1.5.1")
   compile("org.bytedeco:tesseract-platform:1.5.1")
   compile("org.bytedeco:leptonica-platform:1.5.1")
   implementation("com.1stleg:jnativehook:2.1.0")
@@ -24,9 +25,13 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+  kotlinOptions.jvmTarget = "1.8"
+}
+
+javafx {
+  modules("javafx.controls")
 }
 
 configure<ApplicationPluginConvention> {
-    mainClassName = "MainKt"
+  mainClassName = "MainKt"
 }
