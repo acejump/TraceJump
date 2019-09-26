@@ -1,3 +1,4 @@
+import org.bytedeco.javacpp.FloatPointer
 import org.bytedeco.javacpp.IntPointer
 import org.bytedeco.javacv.Java2DFrameConverter
 import org.bytedeco.javacv.LeptonicaFrameConverter
@@ -9,12 +10,16 @@ import org.bytedeco.tesseract.global.tesseract.*
 import java.awt.Rectangle
 import java.awt.Robot
 import java.awt.Toolkit
+import kotlin.math.abs
 import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 
 object Reader {
     private val api = TessBaseAPI()
     val SCALE_FACTOR = 1.0f
+    var previousScreenshot: PIX? = null
+    var lastFractDiff = 0.0f
+    var fractDiff = 0.0f
 
     init {
         if (api.Init("src/main/resources", "eng") != 0) {
@@ -35,20 +40,32 @@ object Reader {
         return pixScaled
     }
 
-    fun fetchTargets(): Map<String, Target> {
+    fun fetchTargets(): Map<String, Target>? {
         val screenshot = getScreenContents()
-        val results = getResults(screenshot).filter {
-            it.string.length > 3
+        if (!hasScreenChanged(screenshot, previousScreenshot)) {
+            screenshot.deallocate()
+            return null
         }
-//        val targetMap = mutableMapOf<Int, Target>()
-//        val text = results.fold("") { acc, t ->
-//            targetMap[acc.length] = t; acc + t.string + " "
-//        }
-
+        val results = getResults(screenshot).filter { it.string.length > 3 }
+        if(previousScreenshot != null) lept.pixDestroy(previousScreenshot)
+        previousScreenshot = screenshot
+        lastFractDiff = fractDiff
         return Pattern.filterTags("").zip(results).toMap()
-//        return Solver(text, "", targetMap.keys).solve()
-//            .map { Pair(it.key, targetMap[it.value]!!) }.toMap()
     }
+
+    private fun hasScreenChanged(screenshot: PIX, previousScreenshot: PIX?) =
+        if (previousScreenshot == null) true
+        else {
+            val fractdiff = FloatPointer(0.20f)
+            val avediff = FloatPointer(0.0f)
+            lept.pixGetDifferenceStats(
+                screenshot, previousScreenshot, 0, 1, fractdiff, avediff, 0
+            )
+            this.fractDiff = fractdiff.get()
+            listOf(fractdiff, avediff).forEach { it.deallocate() }
+            val relativeDiff = abs(lastFractDiff - fractDiff)
+            (0.0001f < relativeDiff).also { if(it) println("RELATIVE DIFF: $relativeDiff") }
+        }
 
     fun TessBaseAPI.recognizeImage(image: PIX) {
         SetImage(image)
@@ -71,7 +88,6 @@ object Reader {
             while (resultIt.Next(RIL_WORD))
             resultIt.deallocate()
         }
-        lept.pixDestroy(image)
         return results
     }
 

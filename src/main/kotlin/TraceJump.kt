@@ -27,19 +27,16 @@ class TraceJump : Application() {
     val repainting = object : Task<Void?>() {
         override fun call(): Void? {
             while (!isCancelled) {
-                if (listener.activated.compareAndSet(true, false) && resultMap.isNotEmpty()) {
+                if (listener.activated.compareAndSet(true, false) && resultMap.isNotEmpty())
                     Platform.runLater { paintScene(resultMap, scene, mouseHandler, stage) }
-                }
 
                 if(hasJumped.compareAndSet(true, false))
                     Platform.runLater { reset() }
 
-                if(listener.deactivated.compareAndSet(true, false)) {
+                if(listener.deactivated.compareAndSet(true, false))
                     Platform.runLater { reset() }
-                }
 
-                if(!listener.active.get())
-                    resultMap = Reader.fetchTargets()
+                if(!listener.active.get()) Reader.fetchTargets()?.run { resultMap = this }
 
                 Thread.sleep(10)
             }
