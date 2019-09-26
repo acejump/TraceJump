@@ -21,7 +21,8 @@ fun paintScene(
     scene.root = Pane().apply { children.add(freshCanvas) }
     scene.onMouseClicked = mouseHandler
     stage.show()
-    if("nix" in System.getProperty("os.name")) {
+    val os = System.getProperty("os.name")
+    if("nix" in os || "nux" in os || "aix" in os) {
         stage.fullScreenExitHint = ""
         stage.isFullScreen = true
     }
