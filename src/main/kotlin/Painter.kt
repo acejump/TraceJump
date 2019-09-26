@@ -21,8 +21,10 @@ fun paintScene(
     scene.root = Pane().apply { children.add(freshCanvas) }
     scene.onMouseClicked = mouseHandler
     stage.show()
-    stage.fullScreenExitHint = ""
-    stage.isFullScreen = true
+    if("nix" in System.getProperty("os.name")) {
+        stage.fullScreenExitHint = ""
+        stage.isFullScreen = true
+    }
     stage.requestFocus()
 }
 

@@ -64,7 +64,7 @@ object Reader {
             this.fractDiff = fractdiff.get()
             listOf(fractdiff, avediff).forEach { it.deallocate() }
             val relativeDiff = abs(lastFractDiff - fractDiff)
-            (0.0001f < relativeDiff).also { if(it) println("RELATIVE DIFF: $relativeDiff") }
+            0.0001f < relativeDiff
         }
 
     fun TessBaseAPI.recognizeImage(image: PIX) {
