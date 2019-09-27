@@ -1,3 +1,4 @@
+
 import Jumper.jumpTo
 import javafx.application.Application
 import javafx.application.Platform
@@ -45,7 +46,7 @@ class TraceJump : Application() {
     }
 
     val mouseHandler = EventHandler<MouseEvent> { e ->
-        val target = resultMap.values.firstOrNull { it.isPointInMap(e.x, e.y) }
+        val target = resultMap.values.firstOrNull { it.isPointInMap(e.x, e.y - VOFFSET) }
         if (target != null) {
             jumpTo(target)
             hasJumped.set(true)
