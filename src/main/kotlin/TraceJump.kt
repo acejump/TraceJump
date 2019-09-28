@@ -1,4 +1,3 @@
-
 import Jumper.jumpTo
 import javafx.application.Application
 import javafx.application.Platform
@@ -18,26 +17,35 @@ class TraceJump : Application() {
     var listener: Listener = Listener {
         resultMap[it]?.run { println("Selected $it"); jumpTo(this); hasJumped.set(true) }
     }
-    @Volatile var resultMap: Map<String, Target> = mapOf()
+    @Volatile
+    var resultMap: Map<String, Target> = mapOf()
     lateinit var canvas: Canvas
     lateinit var scene: Scene
     lateinit var stage: Stage
 
     private val hasJumped = AtomicBoolean(false)
 
+    val keyListener = object : Task<Void?>() {
+        override fun call(): Void? {
+            while (!isCancelled) {
+                if (hasJumped.compareAndSet(true, false))
+                    Platform.runLater { reset() }
+
+                if (listener.deactivated.compareAndSet(true, false))
+                    Platform.runLater { reset() }
+
+                if (!listener.active.get()) Reader.fetchTargets()?.run { resultMap = this }
+                else Thread.sleep(10)
+            }
+            return null
+        }
+    }
+
     val repainting = object : Task<Void?>() {
         override fun call(): Void? {
             while (!isCancelled) {
                 if (listener.activated.compareAndSet(true, false) && resultMap.isNotEmpty())
                     Platform.runLater { paintScene(resultMap, scene, mouseHandler, stage) }
-
-                if(hasJumped.compareAndSet(true, false))
-                    Platform.runLater { reset() }
-
-                if(listener.deactivated.compareAndSet(true, false))
-                    Platform.runLater { reset() }
-
-                if(!listener.active.get()) Reader.fetchTargets()?.run { resultMap = this }
 
                 Thread.sleep(10)
             }
@@ -63,6 +71,7 @@ class TraceJump : Application() {
         }
 
         Thread(repainting).apply { isDaemon = true }.start()
+        Thread(keyListener).apply { isDaemon = true }.start()
 
         stage.run {
             initStyle(StageStyle.TRANSPARENT)

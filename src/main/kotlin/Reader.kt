@@ -10,30 +10,42 @@ import org.bytedeco.tesseract.global.tesseract.*
 import java.awt.Rectangle
 import java.awt.Robot
 import java.awt.Toolkit
+import java.awt.image.BufferedImage
 import kotlin.math.abs
+import kotlin.math.min
 import kotlin.system.exitProcess
 import kotlin.system.measureTimeMillis
 
 object Reader {
-    private val api = TessBaseAPI()
+    private val cores = min(3, Runtime.getRuntime().availableProcessors() / 2)
+    private var apis: Array<TessBaseAPI>
+
     val SCALE_FACTOR = 1.0f
     var previousScreenshot: PIX? = null
     var lastFractDiff = 0.0f
     var fractDiff = 0.0f
 
     init {
-        if (api.Init("src/main/resources", "eng") != 0) {
-            System.err.println("Could not initialize Tesseract")
-            exitProcess(1)
+        apis = (0 until cores).map { TessBaseAPI() }.toTypedArray()
+        apis.forEach {
+            if (it.Init("src/main/resources", "eng") != 0) {
+                System.err.println("Could not initialize Tesseract")
+                exitProcess(1)
+            }
         }
     }
 
     private val robot = Robot()
 
-    fun getScreenContents(): PIX {
+    fun getScreenContents(): Pair<PIX, BufferedImage> {
         val screenRect = Rectangle(Toolkit.getDefaultToolkit().screenSize)
         val capture = robot.createScreenCapture(screenRect)
-        val j2d = Java2DFrameConverter().convert(capture)
+        val pixScaled = imageToPix(capture)
+        return Pair(pixScaled, capture)
+    }
+
+    fun imageToPix(image: BufferedImage): PIX {
+        val j2d = Java2DFrameConverter().convert(image)
         val pix = LeptonicaFrameConverter().convert(j2d)
         val pixScaled = lept.pixScale(pix, SCALE_FACTOR, SCALE_FACTOR)
         pix.deallocate()
@@ -41,14 +53,29 @@ object Reader {
     }
 
     fun fetchTargets(): Map<String, Target>? {
-        val screenshot = getScreenContents()
-        if (!hasScreenChanged(screenshot, previousScreenshot)) {
-            screenshot.deallocate()
+        val (pix, image) = getScreenContents()
+        if (!hasScreenChanged(pix, previousScreenshot)) {
+            pix.deallocate()
             return null
         }
-        val results = getResults(screenshot).filter { it.string.length > 3 }
-        if(previousScreenshot != null) lept.pixDestroy(previousScreenshot)
-        previousScreenshot = screenshot
+
+        val startTime = System.currentTimeMillis()
+        val results = apis.mapIndexed { i, api ->
+            Pair(imageToPix(image.getSubimage(0, i * image.height / cores, image.width, image.height / cores)), api)
+        }.parallelStream()
+            .map { getResults(it.first, it.second) }
+            .toArray()
+            .mapIndexed { i, targets ->
+                (targets as List<Target>).map {
+                    val hAdjust = i * image.height / cores
+                    Target(it.string, it.conf, it.x1, it.y1 + hAdjust, it.x2, it.y2 + hAdjust)
+                }.toTypedArray()
+            }.toTypedArray().flatten()
+
+        println("Recognition time: ${System.currentTimeMillis() - startTime}")
+
+        if (previousScreenshot != null) lept.pixDestroy(previousScreenshot)
+        previousScreenshot = pix
         lastFractDiff = fractDiff
         return Pattern.filterTags("").zip(results).toMap()
     }
@@ -79,7 +106,7 @@ object Reader {
         }
     }
 
-    fun getResults(image: PIX): MutableList<Target> {
+    fun getResults(image: PIX, api: TessBaseAPI): List<Target> {
         api.recognizeImage(image)
         val results = mutableListOf<Target>()
         val resultIt = api.GetIterator()
