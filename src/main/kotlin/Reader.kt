@@ -14,16 +14,15 @@ import java.awt.image.BufferedImage
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.system.exitProcess
-import kotlin.system.measureTimeMillis
 
 object Reader {
     private val cores = min(3, Runtime.getRuntime().availableProcessors() / 2)
     private var apis: Array<TessBaseAPI>
 
-    val SCALE_FACTOR = 1.0f
-    var previousScreenshot: PIX? = null
-    var lastFractDiff = 0.0f
-    var fractDiff = 0.0f
+    private const val SCALE_FACTOR = 1.0f
+    private var previousScreenshot: PIX? = null
+    private var lastFractDiff = 0.0f
+    private var fractDiff = 0.0f
 
     init {
         apis = (0 until cores).map { TessBaseAPI() }.toTypedArray()
@@ -37,14 +36,14 @@ object Reader {
 
     private val robot = Robot()
 
-    fun getScreenContents(): Pair<PIX, BufferedImage> {
+    private fun getScreenContents(): Pair<PIX, BufferedImage> {
         val screenRect = Rectangle(Toolkit.getDefaultToolkit().screenSize)
         val capture = robot.createScreenCapture(screenRect)
-        val pixScaled = imageToPix(capture)
+        val pixScaled = imgToPix(capture)
         return Pair(pixScaled, capture)
     }
 
-    fun imageToPix(image: BufferedImage): PIX {
+    private fun imgToPix(image: BufferedImage): PIX {
         val j2d = Java2DFrameConverter().convert(image)
         val pix = LeptonicaFrameConverter().convert(j2d)
         val pixScaled = lept.pixScale(pix, SCALE_FACTOR, SCALE_FACTOR)
@@ -54,59 +53,56 @@ object Reader {
 
     fun fetchTargets(): Map<String, Target>? {
         val (pix, image) = getScreenContents()
-        if (!hasScreenChanged(pix, previousScreenshot)) {
+        if (!areDifferent(pix, previousScreenshot)) {
             pix.deallocate()
             return null
         }
 
-        val startTime = System.currentTimeMillis()
-        val results = apis.mapIndexed { i, api ->
-            Pair(imageToPix(image.getSubimage(0, i * image.height / cores, image.width, image.height / cores)), api)
+        if (previousScreenshot != null) lept.pixDestroy(previousScreenshot)
+        previousScreenshot = pix
+        lastFractDiff = fractDiff
+
+        return Pattern.filterTags("").zip(parseImage(image)).toMap()
+    }
+
+    private fun parseImage(img: BufferedImage) =
+        apis.mapIndexed { i, api ->
+            val height = img.height / cores
+            Pair(imgToPix(img.getSubimage(0, i * height, img.width, height)), api)
         }.parallelStream()
             .map { getResults(it.first, it.second) }
             .toArray()
             .mapIndexed { i, targets ->
                 (targets as List<Target>).map {
-                    val hAdjust = i * image.height / cores
-                    Target(it.string, it.conf, it.x1, it.y1 + hAdjust, it.x2, it.y2 + hAdjust)
+                    val hAdjust = i * img.height / cores
+                    it.apply { y1 += hAdjust; y2 += hAdjust }
                 }.toTypedArray()
             }.toTypedArray().flatten()
 
-        println("Recognition time: ${System.currentTimeMillis() - startTime}")
-
-        if (previousScreenshot != null) lept.pixDestroy(previousScreenshot)
-        previousScreenshot = pix
-        lastFractDiff = fractDiff
-        return Pattern.filterTags("").zip(results).toMap()
-    }
-
-    private fun hasScreenChanged(screenshot: PIX, previousScreenshot: PIX?) =
-        if (previousScreenshot == null) true
+    private fun areDifferent(img1: PIX, img2: PIX?) =
+        if (img2 == null) true
         else {
             val fractdiff = FloatPointer(0.20f)
             val avediff = FloatPointer(0.0f)
-            lept.pixGetDifferenceStats(
-                screenshot, previousScreenshot, 0, 1, fractdiff, avediff, 0
-            )
+            lept.pixGetDifferenceStats(img1, img2, 0, 1, fractdiff, avediff, 0)
             this.fractDiff = fractdiff.get()
             listOf(fractdiff, avediff).forEach { it.deallocate() }
             val relativeDiff = abs(lastFractDiff - fractDiff)
             0.0001f < relativeDiff
         }
 
-    fun TessBaseAPI.recognizeImage(image: PIX) {
+    private fun TessBaseAPI.recognizeImage(image: PIX) {
         SetImage(image)
-        val durationMs = measureTimeMillis {
-            val monitor = TessMonitorCreate()
-            val resultCode = Recognize(monitor)
-            monitor.deallocate()
-            if (resultCode != 0) {
-                throw Exception("Recognition error: $resultCode")
-            }
-        }
+        val res = GetSourceYResolution()
+        if(res < 70) SetSourceResolution(70)
+        val monitor = TessMonitorCreate()
+        val resultCode = Recognize(monitor)
+        monitor.deallocate()
+        if (resultCode != 0)
+            throw Exception("Recognition error: $resultCode")
     }
 
-    fun getResults(image: PIX, api: TessBaseAPI): List<Target> {
+    private fun getResults(image: PIX, api: TessBaseAPI): List<Target> {
         api.recognizeImage(image)
         val results = mutableListOf<Target>()
         val resultIt = api.GetIterator()

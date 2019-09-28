@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class TraceJump : Application() {
     var listener: Listener = Listener {
-        resultMap[it]?.run { println("Selected $it"); jumpTo(this); hasJumped.set(true) }
+        resultMap[it]?.run { jumpTo(this); hasJumped.set(true) }
     }
     @Volatile
     var resultMap: Map<String, Target> = mapOf()

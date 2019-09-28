@@ -2,9 +2,9 @@ class Target(
     val string: String = "",
     val conf: Float = 0f,
     val x1: Double = 0.0,
-    val y1: Double = 0.0,
+    var y1: Double = 0.0,
     val x2: Double = 0.0,
-    val y2: Double = 0.0
+    var y2: Double = 0.0
 ) {
     val width = x2 - x1
     val height = y2 - y1

@@ -109,10 +109,7 @@ enum class Pattern(val string: String) {
             '8' to "8796054321uiyhjkotgbnmlprfvedcwsxqaz",
             '9' to "9807654321ioujklpyhnmtgbrfvedcwsxqaz",
             '0' to "0987654321opiklujmyhntgbrfvedcwsxqaz"
-        )
-            .mapValues {
-                it.value.mapIndices()
-            }
+        ).mapValues { it.value.mapIndices() }
     }
 }
 

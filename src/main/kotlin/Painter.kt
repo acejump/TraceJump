@@ -30,9 +30,8 @@ fun paintScene(
     stage.requestFocus()
 }
 
-private fun paintTargets(canvas: Canvas, resultMap: Map<String, Target>) {
+private fun paintTargets(canvas: Canvas, resultMap: Map<String, Target>) =
     resultMap.forEach { paintTarget(canvas, it.value, it.key) }
-}
 
 val VOFFSET = 25
 
