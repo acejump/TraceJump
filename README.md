@@ -2,13 +2,19 @@
 
 Mixed reality trace link navigator. Generates trace links from pixels.
 
+## Preview
+
+![](https://user-images.githubusercontent.com/175716/66264340-7ba36e00-e7d1-11e9-8ca2-df94f2d357b6.png)
+
 ## Running
+
+Tested on Mac OS X:
 
 ```
 git clone https://github.com/acejump/tracejump && cd tracejump && ./gradlew run
 ```
 
-Press <kbd>Ctrl</kbd>+<kbd>\\</kbd> to activate TraceJump, then either (1) click on a highlighted region or (2) use the adjacent two-character tag to jump into the semantic web (i.e. StackOverflow).
+Press <kbd>Ctrl</kbd>+<kbd>\\</kbd> to activate TraceJump, then either (1) click on a highlighted region or (2) use the adjacent two-character tag to jump into the semantic web (i.e. Google).
 
 ## To Do
 

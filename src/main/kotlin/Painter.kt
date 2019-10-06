@@ -8,7 +8,6 @@ import javafx.scene.paint.Color
 import javafx.scene.text.Font
 import javafx.stage.Screen
 import javafx.stage.Stage
-import kotlin.math.max
 import kotlin.system.measureTimeMillis
 
 fun paintScene(
@@ -49,12 +48,12 @@ private fun paintTarget(canvas: Canvas, target: Target, tag: String) {
         10.0
     )
     gc.fill = Color(1.0, 1.0, 0.0, 1.0)
-    val heightTag = max(target.height, 15.0)
-    val widthOfTag = max(target.height * 0.7 * 2, 20.0)
-    val startOfTag = target.x1 - widthOfTag
+    val heightTag = 15.0
+    val widthOfTag = 20.0
+    val startOfTag = if(target.x1 > widthOfTag) target.x1 - widthOfTag else target.x2
     gc.fillRoundRect(
         startOfTag,
-        target.y1 - VOFFSET,
+        target.y2 - heightTag - VOFFSET,
         widthOfTag,
         heightTag,
         10.0,
@@ -62,5 +61,5 @@ private fun paintTarget(canvas: Canvas, target: Target, tag: String) {
     )
     gc.fill = Color(0.0, 0.0, 0.0, 1.0)
     gc.font = Font.font("Courier")
-    gc.fillText(tag.toUpperCase(), startOfTag, target.y2 - VOFFSET)
+    gc.fillText(tag.toUpperCase(), startOfTag + 2, target.y2 - VOFFSET - 3)
 }

@@ -111,7 +111,7 @@ object Reader {
             while (resultIt.Next(RIL_WORD))
             resultIt.deallocate()
         }
-        return results
+        return results.filter { it.height > 10 && it.string.count { it.isLetterOrDigit() } > 4 }
     }
 
     private fun readTargetFromResult(resultIt: ResultIterator): Target {

@@ -1,5 +1,6 @@
 import org.jnativehook.GlobalScreen
 import org.jnativehook.NativeHookException
+import org.jnativehook.NativeInputEvent
 import org.jnativehook.NativeInputEvent.*
 import org.jnativehook.keyboard.NativeKeyEvent
 import org.jnativehook.keyboard.NativeKeyEvent.VC_BACK_SLASH
@@ -10,13 +11,16 @@ import java.util.logging.Level
 import java.util.logging.Logger
 import kotlin.system.exitProcess
 
+
 class Listener(val takeAction: (String) -> Unit?) : NativeKeyListener {
     var ctrlDown = AtomicBoolean(false)
     var activated = AtomicBoolean(false)
     var deactivated = AtomicBoolean(false)
-    @Volatile var active = AtomicBoolean(false)
+    @Volatile
+    var active = AtomicBoolean(false)
 
-    @Volatile var query = ""
+    @Volatile
+    var query = ""
 
     init {
         try {
@@ -47,14 +51,26 @@ class Listener(val takeAction: (String) -> Unit?) : NativeKeyListener {
         }
     }
 
-    override fun nativeKeyReleased(p0: NativeKeyEvent) {
-        if (p0.keyCode in ctrlKeys) ctrlDown.set(false)
+    override fun nativeKeyReleased(keyEvent: NativeKeyEvent) {
+        if (keyEvent.keyCode in ctrlKeys) ctrlDown.set(false)
     }
 
     override fun nativeKeyTyped(keyEvent: NativeKeyEvent) {
         if (keyEvent.keyChar.isLetterOrDigit() && active.get()) {
+            consume(keyEvent)
             query += keyEvent.keyChar.toString()
             takeAction(query.takeLast(2))
+        }
+    }
+
+    fun consume(keyEvent: NativeKeyEvent) {
+        try {
+            NativeInputEvent::class.java.getDeclaredField("reserved").apply {
+                isAccessible = true
+                setShort(keyEvent, 0x01.toShort())
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
         }
     }
 }

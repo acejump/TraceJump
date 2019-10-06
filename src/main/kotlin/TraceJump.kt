@@ -1,3 +1,4 @@
+
 import Jumper.jumpTo
 import javafx.application.Application
 import javafx.application.Platform
@@ -34,8 +35,8 @@ class TraceJump : Application() {
                 if (listener.deactivated.compareAndSet(true, false))
                     Platform.runLater { reset() }
 
-                if (!listener.active.get()) Reader.fetchTargets()?.run { resultMap = this }
-                else Thread.sleep(10)
+                if (!listener.active.get())
+                    Reader.fetchTargets()?.run { resultMap = this }
             }
             return null
         }
@@ -53,12 +54,12 @@ class TraceJump : Application() {
         }
     }
 
-    val mouseHandler = EventHandler<MouseEvent> { e ->
-        val target = resultMap.values.firstOrNull { it.isPointInMap(e.x, e.y - VOFFSET) }
-        if (target != null) {
-            jumpTo(target)
-            hasJumped.set(true)
-        }
+    val mouseHandler = EventHandler<MouseEvent> { event ->
+        resultMap.values.firstOrNull { it.isPointInMap(event.x, event.y + VOFFSET) }
+            ?.run {
+                jumpTo(this)
+                hasJumped.set(true)
+            }
     }
 
     override fun start(stage: Stage) {
