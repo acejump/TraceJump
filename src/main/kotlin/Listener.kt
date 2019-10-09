@@ -12,13 +12,12 @@ import java.util.logging.Logger
 import kotlin.system.exitProcess
 
 
-class Listener(val takeAction: (String) -> Unit?) : NativeKeyListener {
+class Listener(val aceJump: TraceJump, val takeAction: (String) -> Unit?) : NativeKeyListener {
     var ctrlDown = AtomicBoolean(false)
     var activated = AtomicBoolean(false)
     var deactivated = AtomicBoolean(false)
     @Volatile
     var active = AtomicBoolean(false)
-
     @Volatile
     var query = ""
 
@@ -43,12 +42,17 @@ class Listener(val takeAction: (String) -> Unit?) : NativeKeyListener {
     override fun nativeKeyPressed(keyEvent: NativeKeyEvent) {
         if (keyEvent.keyCode in ctrlKeys) {
             ctrlDown.set(true)
+            aceJump.screenWatcherThread?.resume()
         } else if (keyEvent.keyCode == VC_BACK_SLASH && ctrlDown.compareAndSet(true, false)) {
             activated.set(true)
             active.set(true)
+            aceJump.screenWatcherThread?.resume()
         } else if (keyEvent.keyCode == VC_ESCAPE) {
             deactivated.set(true)
+            aceJump.repaintingThread?.resume()
         }
+
+        Trigger (100) { aceJump.screenWatcherThread?.resume() }
     }
 
     override fun nativeKeyReleased(keyEvent: NativeKeyEvent) {

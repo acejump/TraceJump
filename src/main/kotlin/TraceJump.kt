@@ -1,4 +1,3 @@
-
 import Jumper.jumpTo
 import javafx.application.Application
 import javafx.application.Platform
@@ -15,9 +14,8 @@ import javafx.stage.StageStyle
 import java.util.concurrent.atomic.AtomicBoolean
 
 class TraceJump : Application() {
-    var listener: Listener = Listener {
-        resultMap[it]?.run { jumpTo(this); hasJumped.set(true) }
-    }
+    var listener: Listener = Listener(this) { resultMap[it]?.run { jumpTo(this); hasJumped.set(true) } }
+
     @Volatile
     var resultMap: Map<String, Target> = mapOf()
     lateinit var canvas: Canvas
@@ -26,31 +24,31 @@ class TraceJump : Application() {
 
     private val hasJumped = AtomicBoolean(false)
 
-    val keyListener = object : Task<Void?>() {
+    val screenWatcher = object : Task<Void?>() {
         override fun call(): Void? {
-            while (!isCancelled) {
-                if (hasJumped.compareAndSet(true, false))
-                    Platform.runLater { reset() }
-
-                if (listener.deactivated.compareAndSet(true, false))
-                    Platform.runLater { reset() }
-
-                if (!listener.active.get())
-                    Reader.fetchTargets()?.run { resultMap = this }
+            while (true) {
+                if (listener.active.get()) repaintingThread?.resume()
+                Reader.fetchTargets()?.run { resultMap = this }
+                if (listener.active.get()) repaintingThread?.resume()
+                screenWatcherThread?.suspend()
             }
-            return null
         }
     }
 
+    @Volatile var screenWatcherThread: Thread? = null
+    @Volatile var repaintingThread: Thread? = null
+
     val repainting = object : Task<Void?>() {
         override fun call(): Void? {
-            while (!isCancelled) {
-                if (listener.activated.compareAndSet(true, false) && resultMap.isNotEmpty())
-                    Platform.runLater { paintScene(resultMap, scene, mouseHandler, stage) }
+            while (true) {
+                repaintingThread?.suspend()
 
-                Thread.sleep(10)
+                if (hasJumped.compareAndSet(true, false) ||
+                    listener.deactivated.compareAndSet(true, false))
+                    Platform.runLater { reset() }
+                else if (listener.activated.compareAndSet(true, false) && resultMap.isNotEmpty())
+                    Platform.runLater { paintScene(resultMap, scene, mouseHandler, stage) }
             }
-            return null
         }
     }
 
@@ -71,8 +69,8 @@ class TraceJump : Application() {
             fill = Color.TRANSPARENT
         }
 
-        Thread(repainting).apply { isDaemon = true }.start()
-        Thread(keyListener).apply { isDaemon = true }.start()
+        Thread(repainting).apply { isDaemon = true; repaintingThread = this }.start()
+        Thread(screenWatcher).apply { isDaemon = true; screenWatcherThread = this }.start()
 
         stage.run {
             initStyle(StageStyle.TRANSPARENT)
@@ -80,7 +78,6 @@ class TraceJump : Application() {
             x = 0.0
             y = 0.0
         }
-
     }
 
     private fun reset() {

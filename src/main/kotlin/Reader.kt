@@ -94,7 +94,7 @@ object Reader {
     private fun TessBaseAPI.recognizeImage(image: PIX) {
         SetImage(image)
         val res = GetSourceYResolution()
-        if(res < 70) SetSourceResolution(70)
+        if (res < 70) SetSourceResolution(70)
         val monitor = TessMonitorCreate()
         val resultCode = Recognize(monitor)
         monitor.deallocate()
@@ -107,8 +107,7 @@ object Reader {
         val results = mutableListOf<Target>()
         val resultIt = api.GetIterator()
         if (resultIt != null) {
-            do results.add(readTargetFromResult(resultIt))
-            while (resultIt.Next(RIL_WORD))
+            while (resultIt.Next(RIL_WORD)) results.add(readTargetFromResult(resultIt))
             resultIt.deallocate()
         }
         return results.filter { it.height > 10 && it.string.count { it.isLetterOrDigit() } > 4 }
