@@ -16,8 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 class TraceJump : Application() {
     var listener: Listener = Listener(this) { resultMap[it]?.run { jumpTo(this); hasJumped.set(true) } }
 
-    @Volatile
-    var resultMap: Map<String, Target> = mapOf()
+    @Volatile var resultMap: Map<String, Target> = mapOf()
     lateinit var canvas: Canvas
     lateinit var scene: Scene
     lateinit var stage: Stage
@@ -85,6 +84,4 @@ class TraceJump : Application() {
         listener.active.set(false)
         stage.close()
     }
-
-    fun run() = launch()
 }
