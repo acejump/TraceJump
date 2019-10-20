@@ -63,7 +63,7 @@ class Listener(val aceJump: TraceJump, val takeAction: (String) -> Unit?) : Nati
         if (keyEvent.keyChar.isLetterOrDigit() && active.get()) {
             consume(keyEvent)
             query += keyEvent.keyChar.toString()
-            takeAction(query.takeLast(2))
+            takeAction(query)
         }
     }
 

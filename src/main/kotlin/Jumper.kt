@@ -3,10 +3,9 @@ import java.net.URI
 import java.net.URLEncoder
 
 object Jumper {
-    fun jumpTo(tg: Target) {
+    fun jumpTo(tg: Target, urlPrefix: String = "https://google.com/search?q=") {
         try {
             val queryString = URLEncoder.encode(tg.string, "UTF-8")
-            val urlPrefix = "https://google.com/search?q="
             val url = "$urlPrefix$queryString"
             Desktop.getDesktop().browse(URI(url))
         } catch (e: Exception) {

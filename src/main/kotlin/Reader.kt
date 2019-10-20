@@ -85,7 +85,7 @@ object Reader {
             val fractdiff = FloatPointer(0.20f)
             val avediff = FloatPointer(0.0f)
             lept.pixGetDifferenceStats(img1, img2, 0, 1, fractdiff, avediff, 0)
-            this.fractDiff = fractdiff.get()
+            fractDiff = fractdiff.get()
             listOf(fractdiff, avediff).forEach { it.deallocate() }
             val relativeDiff = abs(lastFractDiff - fractDiff)
             0.0001f < relativeDiff
@@ -98,8 +98,7 @@ object Reader {
         val monitor = TessMonitorCreate()
         val resultCode = Recognize(monitor)
         monitor.deallocate()
-        if (resultCode != 0)
-            throw Exception("Recognition error: $resultCode")
+        if (resultCode != 0) throw Exception("Recognition error: $resultCode")
     }
 
     private fun getResults(image: PIX, api: TessBaseAPI): List<Target> {
