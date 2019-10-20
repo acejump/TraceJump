@@ -14,7 +14,17 @@ Tested on Mac OS X:
 git clone https://github.com/acejump/tracejump && cd tracejump && ./gradlew run
 ```
 
-Press <kbd>Ctrl</kbd>+<kbd>\\</kbd> to activate TraceJump, then either (1) click on a highlighted region or (2) use the adjacent two-character tag to jump into the semantic web (i.e. Google).
+Press <kbd>Ctrl</kbd>+<kbd>\\</kbd> to activate TraceJump. Some links will appear:
+
+![](https://user-images.githubusercontent.com/175716/67155780-4c1d5700-f2e3-11e9-91bf-50b66aa8f6da.png)
+ 
+Use the adjacent two-character tag to select one. A menu will then open:
+
+![](https://user-images.githubusercontent.com/175716/67155736-9b16bc80-f2e2-11e9-8091-bf6145426362.png)
+
+Select a menu option (e.g. by typing `h`) to jump into the semantic web:
+
+![](https://user-images.githubusercontent.com/175716/67155762-f9439f80-f2e2-11e9-9b2e-4c29f40440aa.png)
 
 ## To Do
 
