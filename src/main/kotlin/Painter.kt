@@ -1,23 +1,21 @@
 
 import javafx.event.EventHandler
-import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
+import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
-import javafx.scene.paint.Color
-import javafx.scene.text.Font
 import javafx.stage.Screen
 import javafx.stage.Stage
 import kotlin.system.measureTimeMillis
 
-fun paintScene(
-    resultMap: Map<String, Target>,
-    scene: Scene,
+fun setStage(
     mouseHandler: EventHandler<MouseEvent>,
-    stage: Stage
+    stage: Stage,
+    function: (GraphicsContext) -> Unit
 ) {
     val freshCanvas = Screen.getPrimary().visualBounds.run { Canvas(width, height) }
-    measureTimeMillis { paintTargets(freshCanvas, resultMap) }
+    measureTimeMillis { function(freshCanvas.graphicsContext2D) }
+    val scene = stage.scene
     scene.root = Pane().apply { children.add(freshCanvas) }
     scene.onMouseClicked = mouseHandler
     stage.show()
@@ -29,37 +27,4 @@ fun paintScene(
     stage.requestFocus()
 }
 
-private fun paintTargets(canvas: Canvas, resultMap: Map<String, Target>) =
-    resultMap.forEach { paintTarget(canvas, it.value, it.key) }
-
 val VOFFSET = 25
-
-private fun paintTarget(canvas: Canvas, target: Target, tag: String) {
-    if (target.conf <= 1 || target.string.length < 3) return
-    val gc = canvas.graphicsContext2D
-
-    gc.fill = Color(0.0, 1.0, 0.0, 0.4)
-    gc.fillRoundRect(
-        target.x1,
-        target.y1 - VOFFSET,
-        target.width,
-        target.height,
-        10.0,
-        10.0
-    )
-    gc.fill = Color(1.0, 1.0, 0.0, 1.0)
-    val heightTag = 15.0
-    val widthOfTag = 20.0
-    val startOfTag = if(target.x1 > widthOfTag) target.x1 - widthOfTag else target.x2
-    gc.fillRoundRect(
-        startOfTag,
-        target.y2 - heightTag - VOFFSET,
-        widthOfTag,
-        heightTag,
-        10.0,
-        10.0
-    )
-    gc.fill = Color(0.0, 0.0, 0.0, 1.0)
-    gc.font = Font.font("Courier")
-    gc.fillText(tag.toUpperCase(), startOfTag + 2, target.y2 - VOFFSET - 3)
-}

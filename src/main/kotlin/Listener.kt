@@ -11,7 +11,6 @@ import java.util.logging.Level
 import java.util.logging.Logger
 import kotlin.system.exitProcess
 
-
 class Listener(val aceJump: TraceJump, val takeAction: (String) -> Unit?) : NativeKeyListener {
     var ctrlDown = AtomicBoolean(false)
     var activated = AtomicBoolean(false)
