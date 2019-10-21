@@ -1,3 +1,4 @@
+import javafx.application.Platform
 import org.jnativehook.GlobalScreen
 import org.jnativehook.NativeHookException
 import org.jnativehook.NativeInputEvent
@@ -11,14 +12,10 @@ import java.util.logging.Level
 import java.util.logging.Logger
 import kotlin.system.exitProcess
 
-class Listener(val aceJump: TraceJump, val takeAction: (String) -> Unit?) : NativeKeyListener {
+class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : NativeKeyListener {
     var ctrlDown = AtomicBoolean(false)
-    var activated = AtomicBoolean(false)
-    var deactivated = AtomicBoolean(false)
-    @Volatile
-    var active = AtomicBoolean(false)
-    @Volatile
-    var query = ""
+    @Volatile var active = AtomicBoolean(false)
+    @Volatile var query = ""
 
     init {
         try {
@@ -41,17 +38,16 @@ class Listener(val aceJump: TraceJump, val takeAction: (String) -> Unit?) : Nati
     override fun nativeKeyPressed(keyEvent: NativeKeyEvent) {
         if (keyEvent.keyCode in ctrlKeys) {
             ctrlDown.set(true)
-            aceJump.screenWatcherThread?.resume()
+            traceJump.screenWatcherThread?.resume()
         } else if (keyEvent.keyCode == VC_BACK_SLASH && ctrlDown.compareAndSet(true, false)) {
-            activated.set(true)
             active.set(true)
-            aceJump.screenWatcherThread?.resume()
+            Platform.runLater { traceJump.paint() }
+            traceJump.screenWatcherThread?.resume()
         } else if (keyEvent.keyCode == VC_ESCAPE) {
-            deactivated.set(true)
-            aceJump.repaintingThread?.resume()
+            Platform.runLater{ traceJump.reset() }
         }
 
-        Trigger (100) { aceJump.screenWatcherThread?.resume() }
+        Trigger (100) { traceJump.screenWatcherThread?.resume() }
     }
 
     override fun nativeKeyReleased(keyEvent: NativeKeyEvent) {
@@ -66,7 +62,7 @@ class Listener(val aceJump: TraceJump, val takeAction: (String) -> Unit?) : Nati
         }
     }
 
-    fun consume(keyEvent: NativeKeyEvent) {
+    private fun consume(keyEvent: NativeKeyEvent) {
         try {
             NativeInputEvent::class.java.getDeclaredField("reserved").apply {
                 isAccessible = true

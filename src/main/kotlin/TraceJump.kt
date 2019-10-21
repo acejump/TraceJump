@@ -20,16 +20,21 @@ class TraceJump : Application() {
 
     var listener: Listener = Listener(this) {
         val lastTwo = it.takeLast(2)
-
         if (!tagSelected && lastTwo in resultMap) {
             selectedTag = resultMap[lastTwo]
             println("Tag selected: ${selectedTag!!.string}")
             tagSelected = true
+            Platform.runLater {
+                setStage(mouseHandler, stage) { gc ->
+                    Menu.draw(gc, selectedTag!!, canvas.width, canvas.height)
+                }
+            }
         } else if (tagSelected) {
             val lastChar = it.last()
             if (lastChar in modalKeyMap) {
                 jumpTo(selectedTag!!, modalKeyMap[lastChar]!!)
                 hasJumped.set(true)
+                Platform.runLater {reset()}
                 tagSelected = false
             }
         }
@@ -44,33 +49,16 @@ class TraceJump : Application() {
     val screenWatcher = object : Task<Void?>() {
         override fun call(): Void? {
             while (true) {
-                if (listener.active.get()) repaintingThread?.resume()
                 Reader.fetchTargets()?.run { resultMap = this }
-                if (listener.active.get()) repaintingThread?.resume()
                 screenWatcherThread?.suspend()
             }
         }
     }
 
     @Volatile var screenWatcherThread: Thread? = null
-    @Volatile var repaintingThread: Thread? = null
 
-    val repainting = object : Task<Void?>() {
-        override fun call(): Void? {
-            while (true) {
-                repaintingThread?.suspend()
-                Platform.runLater { paint() }
-            }
-        }
-    }
-
-    private fun paint() {
-        if (listener.deactivated.compareAndSet(true, false)) reset()
-        else if (tagSelected) setStage(mouseHandler, stage) { Menu.draw(it, selectedTag!!, canvas.width, canvas.height) }
-        else if (hasJumped.compareAndSet(true, false)) reset()
-        else if (listener.activated.compareAndSet(true, false) && resultMap.isNotEmpty())
-            setStage(mouseHandler, stage) { gc -> resultMap.forEach { it.value.paint(gc, it.key) } }
-    }
+    fun paint() =
+        setStage(mouseHandler, stage) { gc -> resultMap.forEach { it.value.paint(gc, it.key) } }
 
     val mouseHandler = EventHandler<MouseEvent> { event ->
         resultMap.values.firstOrNull { it.isPointInMap(event.x, event.y + VOFFSET) }
@@ -83,7 +71,6 @@ class TraceJump : Application() {
         this.stage = stage
         canvas = Screen.getPrimary().visualBounds.run { Canvas(width, height) }
 
-        Thread(repainting).apply { isDaemon = true; repaintingThread = this }.start()
         Thread(screenWatcher).apply { isDaemon = true; screenWatcherThread = this }.start()
 
         stage.run {
@@ -95,7 +82,7 @@ class TraceJump : Application() {
         }
     }
 
-    private fun reset() {
+    fun reset() {
         listener.query = ""
         listener.active.set(false)
         stage.close()

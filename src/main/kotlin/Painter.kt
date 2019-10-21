@@ -11,10 +11,10 @@ import kotlin.system.measureTimeMillis
 fun setStage(
     mouseHandler: EventHandler<MouseEvent>,
     stage: Stage,
-    function: (GraphicsContext) -> Unit
+    paint: (GraphicsContext) -> Unit
 ) {
     val freshCanvas = Screen.getPrimary().visualBounds.run { Canvas(width, height) }
-    measureTimeMillis { function(freshCanvas.graphicsContext2D) }
+    measureTimeMillis { paint(freshCanvas.graphicsContext2D) }
     val scene = stage.scene
     scene.root = Pane().apply { children.add(freshCanvas) }
     scene.onMouseClicked = mouseHandler
