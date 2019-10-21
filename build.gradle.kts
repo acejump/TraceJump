@@ -22,6 +22,8 @@ dependencies {
   implementation("org.openjfx:javafx-swing:11")
   implementation("org.openjfx:javafx:11")
   implementation("com.google.guava:guava:28.1-jre")
+  implementation("org.apache.lucene:lucene-core:8.2.0")
+  implementation("org.apache.lucene:lucene-queryparser:8.2.0")
 }
 
 tasks.withType<KotlinCompile> {
