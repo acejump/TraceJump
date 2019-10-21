@@ -13,7 +13,9 @@ object Menu {
         GITHUB('h', "https://github.com/search?type=Code&q="),
         STACKOVERFLOW('o', "https://stackoverflow.com/search?q="),
         SCHOLAR('s', "https://scholar.google.com/scholar?q="),
-        WIKIPEDIA('w', "https://en.wikipedia.org/wiki/Special:Search?search=")
+        WIKIPEDIA('w', "https://en.wikipedia.org/wiki/Special:Search?search="),
+        TENSORFLOW('t', "https://www.tensorflow.org/s/results?q="),
+        PYTORCH('p', "https://pytorch.org/docs/stable/search.html?q=")
     }
 
     val logos: Map<SearchProvider, Image> =
