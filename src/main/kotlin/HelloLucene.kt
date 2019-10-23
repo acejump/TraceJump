@@ -1,3 +1,4 @@
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.document.Document
 import org.apache.lucene.document.Field
@@ -8,13 +9,16 @@ import org.apache.lucene.index.IndexWriter
 import org.apache.lucene.index.IndexWriterConfig
 import org.apache.lucene.queryparser.classic.QueryParser
 import org.apache.lucene.search.IndexSearcher
-import org.apache.lucene.search.Query
 import org.apache.lucene.search.TopScoreDocCollector
+import org.apache.lucene.store.Directory
 import org.apache.lucene.store.RAMDirectory
+import java.io.FileReader
+import java.nio.file.Paths
 
 fun main() {
     val analyzer = StandardAnalyzer()
-    val index = RAMDirectory()
+    val index = RAMDirectory() // FSDirectory.open(Paths.get("test"))
+
     val config = IndexWriterConfig(analyzer)
 
     val w = IndexWriter(index, config)
@@ -29,7 +33,7 @@ fun main() {
 
     // the "title" arg specifies the default field to use
     // when no field is explicitly specified in the query.
-    val q: Query = QueryParser("title", analyzer).parse(querystr)
+    val q = QueryParser("title", analyzer).parse(querystr)
 
     // 3. search
     val hitsPerPage = 10
@@ -52,9 +56,33 @@ fun main() {
     reader.close()
 }
 
-private fun addDoc(w: IndexWriter, title: String, isbn: String) {
+private fun addDoc(w: IndexWriter, title: String, isbn: String) =
     w.addDocument(Document().apply {
         add(TextField("title", title, Field.Store.YES))
         add(StringField("isbn", isbn, Field.Store.YES))
     })
+
+class LuceneFileSearch(val indexDirectory: Directory, val analyzer: StandardAnalyzer) {
+    fun addFileToIndex(filepath: String) {
+        val file = Paths.get(javaClass.classLoader.getResource(filepath)!!.toURI()).toFile()
+        val indexWriterConfig = IndexWriterConfig(analyzer)
+        val indexWriter = IndexWriter(indexDirectory, indexWriterConfig)
+        val document = Document()
+
+        val fileReader = FileReader(file)
+        document.add(TextField("contents", fileReader))
+        document.add(StringField("path", file.path, Field.Store.YES))
+        document.add(StringField("filename", file.name, Field.Store.YES))
+
+        indexWriter.addDocument(document)
+
+        indexWriter.close()
+    }
+
+    fun searchFiles(inField: String, queryString: String): List<Document> {
+        val query = QueryParser(inField, analyzer).parse(queryString)
+        val indexReader = DirectoryReader.open(indexDirectory)
+        val searcher = IndexSearcher(indexReader)
+        return searcher.search(query, 10).scoreDocs.map { searcher.doc(it.doc) }
+    }
 }
