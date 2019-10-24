@@ -53,6 +53,7 @@ object Reader {
     fun fetchTargets(): Map<String, Target>? {
         val (pix, image) = getScreenContents()
         if (!areDifferent(pix, previousScreenshot)) {
+            lept.pixDestroy(pix)
             pix.deallocate()
             return null
         }
