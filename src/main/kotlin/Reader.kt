@@ -43,13 +43,12 @@ object Reader {
         return Pair(pixScaled, capture)
     }
 
-    private fun imgToPix(image: BufferedImage): PIX {
-        val j2d = Java2DFrameConverter().convert(image)
-        val pix = LeptonicaFrameConverter().convert(j2d)
-        val pixScaled = lept.pixScale(pix, SCALE_FACTOR, SCALE_FACTOR)
-        pix.deallocate()
-        return pixScaled
-    }
+    private fun imgToPix(image: BufferedImage) =
+        LeptonicaFrameConverter().convert(Java2DFrameConverter().convert(image)).run {
+            val scaled = lept.pixScale(this, SCALE_FACTOR, SCALE_FACTOR)
+            deallocate()
+            scaled
+        }
 
     fun fetchTargets(): Map<String, Target>? {
         val (pix, image) = getScreenContents()
@@ -58,7 +57,7 @@ object Reader {
             return null
         }
 
-        if (previousScreenshot != null) lept.pixDestroy(previousScreenshot)
+        previousScreenshot?.let { lept.pixDestroy(it); it.deallocate() }
         previousScreenshot = pix
         lastFractDiff = fractDiff
 
@@ -95,27 +94,25 @@ object Reader {
         SetImage(image)
         val res = GetSourceYResolution()
         if (res < 70) SetSourceResolution(70)
-        val monitor = TessMonitorCreate()
-        val resultCode = Recognize(monitor)
-        monitor.deallocate()
-        if (resultCode != 0) throw Exception("Recognition error: $resultCode")
+        TessMonitorCreate().run {
+            val resultCode = Recognize(this)
+            if (resultCode != 0) throw Exception("Recognition error: $resultCode")
+            deallocate()
+        }
     }
 
     private fun getResults(image: PIX, api: TessBaseAPI): List<Target> {
         api.recognizeImage(image)
         val results = mutableListOf<Target>()
-        val resultIt = api.GetIterator()
-        if (resultIt != null) {
-            while (resultIt.Next(RIL_WORD)) results.add(readTargetFromResult(resultIt))
-            resultIt.deallocate()
+        api.GetIterator()?.run {
+            while (Next(RIL_WORD)) results.add(readTargetFromResult(this))
+            deallocate()
         }
         return results.filter { it.height > 10 && it.string.count { it.isLetterOrDigit() } > 4 }
     }
 
     private fun readTargetFromResult(resultIt: ResultIterator): Target {
-        val outTextPtr = resultIt.GetUTF8Text(RIL_WORD)
-        val outText = outTextPtr.string
-        outTextPtr.deallocate()
+        val outText = resultIt.GetUTF8Text(RIL_WORD).run { string.also { deallocate() } }
 
         val conf = resultIt.Confidence(RIL_WORD)
 
@@ -131,8 +128,7 @@ object Reader {
         val y1 = top.get().toDouble() / SCALE_FACTOR
         val x2 = right.get().toDouble() / SCALE_FACTOR
         val y2 = bottom.get().toDouble() / SCALE_FACTOR
-        arrayOf(left, top, right, bottom).forEach { it.deallocate() }
-        pageIt.deallocate()
+        arrayOf(left, top, right, bottom, pageIt).forEach { it.deallocate() }
 
         return Target(outText, conf, x1, y1, x2, y2)
     }

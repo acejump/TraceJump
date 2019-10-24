@@ -34,7 +34,7 @@ class TraceJump : Application() {
             if (lastChar in modalKeyMap) {
                 jumpTo(selectedTag!!, modalKeyMap[lastChar]!!)
                 hasJumped.set(true)
-                Platform.runLater {reset()}
+                Platform.runLater { reset() }
                 tagSelected = false
             }
         }

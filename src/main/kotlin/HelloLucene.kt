@@ -1,7 +1,7 @@
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.document.Document
-import org.apache.lucene.document.Field
+import org.apache.lucene.document.Field.Store.YES
 import org.apache.lucene.document.StringField
 import org.apache.lucene.document.TextField
 import org.apache.lucene.index.DirectoryReader
@@ -58,8 +58,8 @@ fun main() {
 
 private fun addDoc(w: IndexWriter, title: String, isbn: String) =
     w.addDocument(Document().apply {
-        add(TextField("title", title, Field.Store.YES))
-        add(StringField("isbn", isbn, Field.Store.YES))
+        add(TextField("title", title, YES))
+        add(StringField("isbn", isbn, YES))
     })
 
 class LuceneFileSearch(val indexDirectory: Directory, val analyzer: StandardAnalyzer) {
@@ -71,8 +71,8 @@ class LuceneFileSearch(val indexDirectory: Directory, val analyzer: StandardAnal
 
         val fileReader = FileReader(file)
         document.add(TextField("contents", fileReader))
-        document.add(StringField("path", file.path, Field.Store.YES))
-        document.add(StringField("filename", file.name, Field.Store.YES))
+        document.add(StringField("path", file.path, YES))
+        document.add(StringField("filename", file.name, YES))
 
         indexWriter.addDocument(document)
 
