@@ -49,7 +49,8 @@ class TraceJump : Application() {
     val screenWatcher = object : Task<Void?>() {
         override fun call(): Void? {
             while (true) {
-                Reader.fetchTargets()?.run { resultMap = this }
+                if (!listener.active.get())
+                    Reader.fetchTargets()?.run { resultMap = this }
                 screenWatcherThread?.suspend()
             }
         }
