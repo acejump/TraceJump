@@ -1,0 +1,69 @@
+<idea-plugin url="https://github.com/acejump/TraceJump">
+  <name>TraceJump</name>
+  <id>TraceJump</id>
+
+  <description>TraceJump allows you to quickly navigate from source code to documentation.</description>
+  <change-notes>Introduce embedded IntelliJ IDEA plugin.</change-notes>
+
+  <depends>com.intellij.modules.platform</depends>
+
+  <category>Navigation</category>
+  <vendor url="https://github.com/acejump/tracejump">TraceJump</vendor>
+  <idea-version since-build="182.5107.41"/>
+
+<!--  <application-components>-->
+<!--    <component>-->
+<!--      <implementation-class>org.tracejump.config.AceConfig</implementation-class>-->
+<!--    </component>-->
+<!--  </application-components>-->
+
+<!--  <extensions defaultExtensionNs="com.intellij">-->
+<!--    <applicationService serviceImplementation="org.tracejump.config.AceConfig" overrides="false"/>-->
+<!--    <applicationConfigurable groupId="tools" displayName="TraceJump"-->
+<!--                             id="preferences.AceConfigurable"-->
+<!--                             instance="org.tracejump.config.AceConfig"/>-->
+<!--  </extensions>-->
+
+<!--  <actions>-->
+<!--    <action id="AceAction"-->
+<!--            class="org.tracejump.control.AceAction"-->
+<!--            text="Activate TraceJump mode"-->
+<!--            description="Targets a character in TraceJump">-->
+<!--      <keyboard-shortcut keymap="Mac OS X" first-keystroke="ctrl SEMICOLON"/>-->
+<!--      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl SEMICOLON"/>-->
+<!--      <keyboard-shortcut keymap="$default" first-keystroke="ctrl SEMICOLON"/>-->
+<!--    </action>-->
+<!--    <action id="AceLineAction"-->
+<!--            class="org.tracejump.control.AceLineAction"-->
+<!--            text="Display Line Markers"-->
+<!--            description="Targets line markers in TraceJump">-->
+<!--      <keyboard-shortcut keymap="Mac OS X" first-keystroke="ctrl shift SEMICOLON"/>-->
+<!--      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl shift SEMICOLON"/>-->
+<!--      <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift SEMICOLON"/>-->
+<!--    </action>-->
+<!--    <action id="AceTargetAction"-->
+<!--            class="org.tracejump.control.AceTargetAction"-->
+<!--            text="Start in Target Mode"-->
+<!--            description="Targets a whole word in TraceJump">-->
+<!--      <keyboard-shortcut keymap="Mac OS X" first-keystroke="ctrl alt SEMICOLON"/>-->
+<!--      <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="ctrl alt SEMICOLON"/>-->
+<!--      <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt SEMICOLON"/>-->
+<!--    </action>-->
+<!--    <action id="AceWordAction"-->
+<!--            class="org.tracejump.control.AceWordAction"-->
+<!--            text="Start in Word Mode"-->
+<!--            description="Searches for all words on the screen in TraceJump"/>-->
+<!--    <action id="AceWordForwardAction"-->
+<!--            class="org.tracejump.control.AceWordForwardAction"-->
+<!--            text="Start in Word Mode only searching after the caret"-->
+<!--            description="Searches for all words after the caret in TraceJump"/>-->
+<!--    <action id="AceWordBackwardsAction"-->
+<!--            class="org.tracejump.control.AceWordBackwardsAction"-->
+<!--            text="Start in Word Mode only searching before the caret"-->
+<!--            description="Searches for all words before the caret in TraceJump"/>-->
+<!--    <action id="AceDeclarationAction"-->
+<!--            class="org.tracejump.control.AceDefinitionAction"-->
+<!--            text="Start in Declaration Mode"-->
+<!--            description="Go to the declaration of a token in the editor"/>-->
+<!--  </actions>-->
+</idea-plugin>
