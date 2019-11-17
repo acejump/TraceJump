@@ -62,7 +62,7 @@ class TraceJump : Application() {
         setStage(mouseHandler, stage) { gc -> resultMap.forEach { it.value.paint(gc, it.key) } }
 
     val mouseHandler = EventHandler<MouseEvent> { event ->
-        resultMap.values.firstOrNull { it.isPointInMap(event.x, event.y + VOFFSET) }
+        resultMap.values.firstOrNull { it.isPointInMap(event.x, event.y - VOFFSET) }
             ?.run { hasJumped.set(true) }
     }
 

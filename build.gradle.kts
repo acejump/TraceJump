@@ -15,9 +15,9 @@ repositories {
 
 dependencies {
   implementation(kotlin("stdlib-jdk8"))
-  compile("org.bytedeco:javacv-platform:1.5.1")
-  compile("org.bytedeco:tesseract-platform:1.5.1")
-  compile("org.bytedeco:leptonica-platform:1.5.1")
+  compile("org.bytedeco:javacv-platform:1.5.2")
+  compile("org.bytedeco:tesseract-platform:1.5.2")
+  compile("org.bytedeco:leptonica-platform:1.5.2")
   implementation("com.1stleg:jnativehook:2.1.0")
   implementation("org.openjfx:javafx-swing:11")
   implementation("org.openjfx:javafx:11")
