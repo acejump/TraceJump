@@ -47,21 +47,14 @@ object Reader {
 
     private fun imgToPix(image: BufferedImage) =
         LeptonicaFrameConverter().convert(Java2DFrameConverter().convert(image)).run {
-            val scaled = lept.pixScale(this,
-                SCALE_FACTOR,
-                SCALE_FACTOR
-            )
+            val scaled = lept.pixScale(this, SCALE_FACTOR, SCALE_FACTOR)
             deallocate()
             scaled
         }
 
     fun fetchTargets(): Map<String, Target>? {
         val (pix, image) = getScreenContents()
-        if (!areDifferent(
-                pix,
-                previousScreenshot
-            )
-        ) {
+        if (!areDifferent(pix, previousScreenshot)) {
             lept.pixDestroy(pix)
             pix.deallocate()
             return null
@@ -79,15 +72,7 @@ object Reader {
     private fun parseImage(img: BufferedImage) =
         apis.mapIndexed { i, api ->
             val height = img.height / cores
-            Pair(
-                imgToPix(
-                    img.getSubimage(
-                        0,
-                        i * height,
-                        img.width,
-                        height
-                    )
-                ), api)
+            Pair(imgToPix(img.getSubimage(0, i * height, img.width, height)), api)
         }.parallelStream()
             .map { getResults(it.first, it.second) }
             .toArray()

@@ -27,9 +27,9 @@ repositories { mavenCentral() }
 
 dependencies {
     implementation(kotlin("stdlib"))
-    compile("org.bytedeco:javacv-platform:1.5.2")
-    compile("org.bytedeco:tesseract-platform:1.5.2")
-    compile("org.bytedeco:leptonica-platform:1.5.2")
+    implementation("org.bytedeco:javacv-platform:1.5.2")
+    implementation("org.bytedeco:tesseract-platform:4.1.0-1.5.2")
+    implementation("org.bytedeco:leptonica-platform:1.78.0-1.5.2")
     implementation("org.openjfx:javafx:11")
     implementation("com.google.guava:guava:28.1-jre")
     implementation("org.openjfx:javafx-swing:11")

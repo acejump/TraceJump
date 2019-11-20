@@ -58,11 +58,11 @@ class TraceJump : Application() {
     val screenWatcher = object : Task<Void?>() {
         override fun call(): Void? {
             while (true) {
-                println("testing")
                 if (!listener.active.get())
                     try {
                         Reader.fetchTargets()?.run { resultMap = this }
-                    } catch (ex: Exception) { ex.printStackTrace() }
+                    } catch (ex: Exception) { println("exception: ${ex.stackTrace}") }
+                screenWatcherThread?.suspend()
             }
         }
     }
@@ -78,8 +78,6 @@ class TraceJump : Application() {
     }
 
     override fun start(stage: Stage) {
-        println("Entering")
-
         Platform.setImplicitExit(false)
 
         this.stage = stage

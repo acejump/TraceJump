@@ -60,7 +60,7 @@ class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : Na
             Platform.runLater { traceJump.reset() }
         }
 
-//        Trigger(100) { traceJump.screenWatcherThread?.resume() }
+        Trigger(100) { traceJump.screenWatcherThread?.resume() }
     }
 
     override fun nativeKeyReleased(keyEvent: NativeKeyEvent) {
