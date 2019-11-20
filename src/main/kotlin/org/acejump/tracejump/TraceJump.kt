@@ -1,5 +1,6 @@
-import Jumper.jumpTo
-import Menu.modalKeyMap
+package org.acejump.tracejump
+
+
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.concurrent.Task
@@ -12,33 +13,41 @@ import javafx.scene.paint.Color
 import javafx.stage.Screen
 import javafx.stage.Stage
 import javafx.stage.StageStyle.TRANSPARENT
+import org.acejump.tracejump.Jumper.jumpTo
+import org.acejump.tracejump.Menu.modalKeyMap
 import java.util.concurrent.atomic.AtomicBoolean
 
 class TraceJump : Application() {
     @Volatile var tagSelected = false
     @Volatile var selectedTag: Target? = null
 
-    var listener: Listener = Listener(this) {
-        val lastTwo = it.takeLast(2)
-        if (!tagSelected && lastTwo in resultMap) {
-            selectedTag = resultMap[lastTwo]
-            println("Tag selected: ${selectedTag!!.string}")
-            tagSelected = true
-            Platform.runLater {
-                setStage(mouseHandler, stage) { gc ->
-                    Menu.draw(gc, selectedTag!!, canvas.width, canvas.height)
+    var listener: Listener =
+        Listener(this) {
+            val lastTwo = it.takeLast(2)
+            if (!tagSelected && lastTwo in resultMap) {
+                selectedTag = resultMap[lastTwo]
+                println("Tag selected: ${selectedTag!!.string}")
+                tagSelected = true
+                Platform.runLater {
+                    setStage(mouseHandler, stage) { gc ->
+                        Menu.draw(
+                            gc,
+                            selectedTag!!,
+                            canvas.width,
+                            canvas.height
+                        )
+                    }
+                }
+            } else if (tagSelected) {
+                val lastChar = it.last()
+                if (lastChar in modalKeyMap) {
+                    jumpTo(selectedTag!!, modalKeyMap[lastChar]!!)
+                    hasJumped.set(true)
+                    Platform.runLater { reset() }
+                    tagSelected = false
                 }
             }
-        } else if (tagSelected) {
-            val lastChar = it.last()
-            if (lastChar in modalKeyMap) {
-                jumpTo(selectedTag!!, modalKeyMap[lastChar]!!)
-                hasJumped.set(true)
-                Platform.runLater { reset() }
-                tagSelected = false
-            }
         }
-    }
 
     @Volatile var resultMap: Map<String, Target> = mapOf()
     lateinit var canvas: Canvas
@@ -49,24 +58,28 @@ class TraceJump : Application() {
     val screenWatcher = object : Task<Void?>() {
         override fun call(): Void? {
             while (true) {
+                println("testing")
                 if (!listener.active.get())
-                    Reader.fetchTargets()?.run { resultMap = this }
-                screenWatcherThread?.suspend()
+                    try {
+                        Reader.fetchTargets()?.run { resultMap = this }
+                    } catch (ex: Exception) { ex.printStackTrace() }
             }
         }
     }
 
     @Volatile var screenWatcherThread: Thread? = null
 
-    fun paint() =
-        setStage(mouseHandler, stage) { gc -> resultMap.forEach { it.value.paint(gc, it.key) } }
+    fun paint() = setStage(mouseHandler, stage) { gc -> resultMap.forEach { it.value.paint(gc, it.key) } }
 
     val mouseHandler = EventHandler<MouseEvent> { event ->
-        resultMap.values.firstOrNull { it.isPointInMap(event.x, event.y - VOFFSET) }
+        resultMap.values
+            .firstOrNull { it.isPointInMap(event.x, event.y - VOFFSET) }
             ?.run { hasJumped.set(true) }
     }
 
     override fun start(stage: Stage) {
+        println("Entering")
+
         Platform.setImplicitExit(false)
 
         this.stage = stage

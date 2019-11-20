@@ -1,3 +1,5 @@
+package org.acejump.tracejump
+
 import java.awt.Desktop
 import java.net.URI
 import java.net.URLEncoder

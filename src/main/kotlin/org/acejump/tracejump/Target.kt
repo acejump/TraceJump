@@ -1,3 +1,5 @@
+package org.acejump.tracejump
+
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
@@ -29,7 +31,7 @@ class Target(
         gc.fill = Color(1.0, 1.0, 0.0, 1.0)
         val heightTag = 15.0
         val widthOfTag = 20.0
-        val startOfTag = if(x1 > widthOfTag) x1 - widthOfTag else x2
+        val startOfTag = if (x1 > widthOfTag) x1 - widthOfTag else x2
         gc.fillRoundRect(
             startOfTag,
             y2 - heightTag - VOFFSET,

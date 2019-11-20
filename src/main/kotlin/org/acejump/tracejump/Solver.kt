@@ -1,4 +1,6 @@
-import Pattern.Companion.defaultTagOrder
+package org.acejump.tracejump
+
+import org.acejump.tracejump.Pattern.Companion.defaultTagOrder
 import com.google.common.collect.Multimaps
 import com.google.common.collect.Ordering
 import com.google.common.collect.TreeMultimap

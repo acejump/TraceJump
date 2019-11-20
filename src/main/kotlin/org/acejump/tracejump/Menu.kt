@@ -1,9 +1,10 @@
+package org.acejump.tracejump
 
-import Menu.SearchProvider.values
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.image.Image
 import javafx.scene.paint.Color
 import javafx.scene.text.Font
+import org.acejump.tracejump.Menu.SearchProvider.values
 
 object Menu {
     val logoWidth = 100.0
@@ -19,7 +20,9 @@ object Menu {
     }
 
     val logos: Map<SearchProvider, Image> =
-        values().map { Pair(it, Image("/$it.png", logoWidth, logoWidth, false, true)) }.toMap()
+        values().map { Pair(it, Image("/$it.png",
+            logoWidth,
+            logoWidth, false, true)) }.toMap()
 
     val modalKeyMap = values().map { Pair(it.key, it.url) }.toMap()
 

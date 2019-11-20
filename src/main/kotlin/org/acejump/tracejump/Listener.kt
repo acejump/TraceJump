@@ -1,3 +1,4 @@
+package org.acejump.tracejump
 
 import javafx.application.Platform
 import org.jnativehook.GlobalScreen
@@ -21,8 +22,10 @@ class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : Na
     /*NativeMouseMotionListener, NativeMouseListener,*/ AbstractExecutorService() {
     var ctrlDown = AtomicBoolean(false)
     var lastUpdated = 0L
-    @Volatile var active = AtomicBoolean(false)
-    @Volatile var query = ""
+    @Volatile
+    var active = AtomicBoolean(false)
+    @Volatile
+    var query = ""
 
     init {
         try {
@@ -57,7 +60,7 @@ class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : Na
             Platform.runLater { traceJump.reset() }
         }
 
-        Trigger (100) { traceJump.screenWatcherThread?.resume() }
+//        Trigger(100) { traceJump.screenWatcherThread?.resume() }
     }
 
     override fun nativeKeyReleased(keyEvent: NativeKeyEvent) {
@@ -66,9 +69,9 @@ class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : Na
 
     override fun nativeKeyTyped(keyEvent: NativeKeyEvent) {
         if (keyEvent.keyChar.isLetterOrDigit() && active.get()) {
-            consume(keyEvent)
             query += keyEvent.keyChar.toString()
             takeAction(query)
+            consume(keyEvent)
         }
     }
 
@@ -99,7 +102,6 @@ class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : Na
 //        Trigger (1000) { traceJump.screenWatcherThread?.resume() }
 
     private var running = false
-
 
     override fun shutdown() {
         running = false

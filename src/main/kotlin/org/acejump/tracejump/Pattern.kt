@@ -1,3 +1,5 @@
+package org.acejump.tracejump
+
 /**
  * Patterns related to key priority, separation, and regexps for line mode.
  */
