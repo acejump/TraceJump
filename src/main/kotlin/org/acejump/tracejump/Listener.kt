@@ -9,6 +9,9 @@ import org.jnativehook.keyboard.NativeKeyEvent
 import org.jnativehook.keyboard.NativeKeyEvent.VC_BACK_SLASH
 import org.jnativehook.keyboard.NativeKeyEvent.VC_ESCAPE
 import org.jnativehook.keyboard.NativeKeyListener
+import org.jnativehook.mouse.NativeMouseEvent
+import org.jnativehook.mouse.NativeMouseListener
+import org.jnativehook.mouse.NativeMouseMotionListener
 import java.util.*
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
@@ -19,7 +22,7 @@ import kotlin.system.exitProcess
 
 
 class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : NativeKeyListener,
-    /*NativeMouseMotionListener, NativeMouseListener,*/ AbstractExecutorService() {
+    NativeMouseMotionListener, NativeMouseListener, AbstractExecutorService() {
     var ctrlDown = AtomicBoolean(false)
     var lastUpdated = 0L
     @Volatile
@@ -75,7 +78,7 @@ class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : Na
         }
     }
 
-    private fun consume(keyEvent: NativeKeyEvent) {
+    private fun consume(keyEvent: NativeInputEvent) {
         try {
             NativeInputEvent::class.java.getDeclaredField("reserved").apply {
                 isAccessible = true
@@ -86,20 +89,37 @@ class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : Na
         }
     }
 
-//    override fun nativeMouseMoved(p0: NativeMouseEvent?) =
-//        Trigger (1000) { traceJump.screenWatcherThread?.resume() }
-//
-//    override fun nativeMouseDragged(p0: NativeMouseEvent?) =
-//        Trigger (1000) { traceJump.screenWatcherThread?.resume() }
-//
-//    override fun nativeMousePressed(p0: NativeMouseEvent?) =
-//        Trigger (1000) { traceJump.screenWatcherThread?.resume() }
-//
-//    override fun nativeMouseClicked(p0: NativeMouseEvent?) =
-//        Trigger (1000) { traceJump.screenWatcherThread?.resume() }
-//
-//    override fun nativeMouseReleased(p0: NativeMouseEvent?) =
-//        Trigger (1000) { traceJump.screenWatcherThread?.resume() }
+    override fun nativeMouseMoved(p0: NativeMouseEvent) {
+        Trigger(1000) { traceJump.screenWatcherThread?.resume() }
+        consume(p0)
+    }
+
+    override fun nativeMouseDragged(p0: NativeMouseEvent) {
+        println("${p0.x} + ${p0.y}")
+
+        Trigger(1000) { traceJump.screenWatcherThread?.resume() }
+        consume(p0)
+    }
+
+    override fun nativeMousePressed(p0: NativeMouseEvent) {
+        println("${p0.x} + ${p0.y}")
+
+        Trigger(1000) { traceJump.screenWatcherThread?.resume() }
+        consume(p0)
+    }
+
+    override fun nativeMouseClicked(p0: NativeMouseEvent) {
+        println("${p0.x} + ${p0.y}")
+        Trigger(1000) { traceJump.screenWatcherThread?.resume() }
+        consume(p0)
+    }
+
+    override fun nativeMouseReleased(p0: NativeMouseEvent) {
+        println("${p0.x} + ${p0.y}")
+
+        Trigger(1000) { traceJump.screenWatcherThread?.resume() }
+        consume(p0)
+    }
 
     private var running = false
 

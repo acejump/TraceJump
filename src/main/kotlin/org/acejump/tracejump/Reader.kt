@@ -62,11 +62,9 @@ object Reader {
 
         previousScreenshot?.let { lept.pixDestroy(it); it.deallocate() }
         previousScreenshot = pix
-        lastFractDiff =
-            fractDiff
+        lastFractDiff = fractDiff
 
-        return Pattern.filterTags("")
-            .zip(parseImage(image)).toMap()
+        return Pattern.filterTags("").zip(parseImage(image)).toMap()
     }
 
     private fun parseImage(img: BufferedImage) =

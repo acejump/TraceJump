@@ -24,7 +24,8 @@ object Menu {
             logoWidth,
             logoWidth, false, true)) }.toMap()
 
-    val modalKeyMap = values().map { Pair(it.key, it.url) }.toMap()
+    val modalKeyMap = (values().map { Pair(it.key, it.url) } +
+            ('1'..'6').map { Pair(it, "https://kotlinlang.org/?q=") }).toMap()
 
     fun draw(gc: GraphicsContext, selectedTag: Target, width: Double, height: Double) {
         gc.font = Font.font("Courier", 20.0)
@@ -38,7 +39,7 @@ object Menu {
             startX - padding,
             startY - padding * 2,
             logos.size * boxWidth + padding,
-            logoWidth + 4 * padding,
+            logoWidth + 10 * padding,
             20.0,
             20.0
         )
@@ -62,5 +63,19 @@ object Menu {
         gc.fillRoundRect(startX, startY - 20 - fontHeight + 3, query.length * (fontWidth - 2.5), fontHeight, 10.0, 10.0)
         gc.fill = Color(0.0, 0.0, 0.0, 1.0)
         gc.fillText("\uD83D\uDD0E$query", startX, startY - 20)
+
+        gc.fill = Color(0.0, 0.0, 0.0, 1.0)
+
+        val startOfResultX = startX
+        val startOfResultY = startY + logoWidth + 2 * padding
+        val words = "lorem ipsum … dolor sit … amet consectetur $query"
+
+        ('A'..'F').forEachIndexed { i, l ->
+            gc.fill = Color(1.0, 1.0, 0.0, 1.0)
+            gc.fillRoundRect(startOfResultX, startOfResultY + (i * (fontHeight + 3)), fontWidth, fontHeight, 10.0, 10.0)
+            gc.fill = Color(0.0, 0.0, 0.0, 1.0)
+            val result = words.split(" ").shuffled().joinToString(" ")
+            gc.fillText("${i + 1} Doc.$l - $result", startOfResultX + 2, startOfResultY - 5 + ((i+1) * (fontHeight + 3)))
+        }
     }
 }
