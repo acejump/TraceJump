@@ -27,15 +27,15 @@ object Menu {
     val modalKeyMap = (values().map { Pair(it.key, it.url) } +
             ('1'..'6').map { Pair(it, "https://kotlinlang.org/?q=") }).toMap()
 
-    fun draw(gc: GraphicsContext, selectedTag: Target, width: Double, height: Double) {
-        gc.font = Font.font("Courier", 20.0)
-        gc.fill = Color(0.5, 0.5, 0.5, 1.0)
+    fun draw(gc: GraphicsContext, selectedTag: Target, width: Double, height: Double) = gc.run {
+        font = Font.font("Courier", 20.0)
+        fill = Color(0.5, 0.5, 0.5, 1.0)
 
         val padding = 25.0
         val boxWidth = (logoWidth + padding)
         val startX = width / 2.0 - logos.size * boxWidth / 2.0
         val startY = height / 2.0 - logoWidth
-        gc.fillRoundRect(
+        fillRoundRect(
             startX - padding,
             startY - padding * 2,
             logos.size * boxWidth + padding,
@@ -48,34 +48,34 @@ object Menu {
 
         logos.entries.forEachIndexed { i, e ->
             val bottomHeight = startY + logoWidth + padding / 2
-            gc.drawImage(e.value, startX + boxWidth * i, startY)
+            drawImage(e.value, startX + boxWidth * i, startY)
             val startOfTag = startX + boxWidth * i + boxWidth / 2.0 - 20.0
-            gc.fill = Color(1.0, 1.0, 0.0, 1.0)
+            fill = Color(1.0, 1.0, 0.0, 1.0)
 
-            gc.fillRoundRect(startOfTag, bottomHeight + 3.0, fontWidth, fontHeight, 10.0, 10.0)
-            gc.fill = Color(0.0, 0.0, 0.0, 1.0)
+            fillRoundRect(startOfTag, bottomHeight + 3.0, fontWidth, fontHeight, 10.0, 10.0)
+            fill = Color(0.0, 0.0, 0.0, 1.0)
             val letter = e.key.key.toUpperCase().toString()
-            gc.fillText(letter, startOfTag + 2, bottomHeight + fontHeight)
+            fillText(letter, startOfTag + 2, bottomHeight + fontHeight)
         }
 
         val query = selectedTag.string
-        gc.fill = Color(0.5, 0.5, 0.5, 1.0)
-        gc.fillRoundRect(startX, startY - 20 - fontHeight + 3, query.length * (fontWidth - 2.5), fontHeight, 10.0, 10.0)
-        gc.fill = Color(0.0, 0.0, 0.0, 1.0)
-        gc.fillText("\uD83D\uDD0E$query", startX, startY - 20)
+        fill = Color(0.5, 0.5, 0.5, 1.0)
+        fillRoundRect(startX, startY - 20 - fontHeight + 3, query.length * (fontWidth - 2.5), fontHeight, 10.0, 10.0)
+        fill = Color(0.0, 0.0, 0.0, 1.0)
+        fillText("\uD83D\uDD0E$query", startX, startY - 20)
 
-        gc.fill = Color(0.0, 0.0, 0.0, 1.0)
+        fill = Color(0.0, 0.0, 0.0, 1.0)
 
         val startOfResultX = startX
         val startOfResultY = startY + logoWidth + 2 * padding
         val words = "lorem ipsum … dolor sit … amet consectetur $query"
 
         ('A'..'F').forEachIndexed { i, l ->
-            gc.fill = Color(1.0, 1.0, 0.0, 1.0)
-            gc.fillRoundRect(startOfResultX, startOfResultY + (i * (fontHeight + 3)), fontWidth, fontHeight, 10.0, 10.0)
-            gc.fill = Color(0.0, 0.0, 0.0, 1.0)
+            fill = Color(1.0, 1.0, 0.0, 1.0)
+            fillRoundRect(startOfResultX, startOfResultY + (i * (fontHeight + 3)), fontWidth, fontHeight, 10.0, 10.0)
+            fill = Color(0.0, 0.0, 0.0, 1.0)
             val result = words.split(" ").shuffled().joinToString(" ")
-            gc.fillText("${i + 1} Doc.$l - $result", startOfResultX + 2, startOfResultY - 5 + ((i+1) * (fontHeight + 3)))
+            fillText("${i + 1} Doc.$l - $result", startOfResultX + 2, startOfResultY - 5 + ((i+1) * (fontHeight + 3)))
         }
     }
 }
