@@ -8,6 +8,7 @@ plugins {
 //    id("org.jetbrains.intellij") version "0.4.10"
     id("org.openjfx.javafxplugin") version "0.0.8"
     id("org.beryx.jlink") version "2.16.4"
+    id("de.fayard.refreshVersions") version "0.8.6"
 }
 
 val entrypoint = "tracejump/org.acejump.tracejump.MainKt"
@@ -27,15 +28,15 @@ repositories { mavenCentral() }
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("org.bytedeco:javacv-platform:1.5.2")
-    implementation("org.bytedeco:tesseract-platform:4.1.0-1.5.2")
-    implementation("org.bytedeco:leptonica-platform:1.78.0-1.5.2")
-    implementation("org.openjfx:javafx:11")
-    implementation("com.google.guava:guava:28.1-jre")
-    implementation("org.openjfx:javafx-swing:11")
-    implementation("com.1stleg:jnativehook:2.1.0")
-//    implementation("org.apache.lucene:lucene-core:8.2.0")
-//    implementation("org.apache.lucene:lucene-queryparser:8.2.0")
+    implementation("org.bytedeco:javacv-platform:_")
+    implementation("org.bytedeco:tesseract-platform:_")
+    implementation("org.bytedeco:leptonica-platform:_")
+    implementation("org.openjfx:javafx:_")
+    implementation("com.google.guava:guava:_")
+    implementation("org.openjfx:javafx-swing:_")
+    implementation("com.1stleg:jnativehook:_")
+//    implementation("org.apache.lucene:lucene-core:_")
+//    implementation("org.apache.lucene:lucene-queryparser:_")
 }
 
 //intellij {
