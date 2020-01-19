@@ -5,10 +5,10 @@ plugins {
     `maven-publish`
     idea apply true
     kotlin("jvm") version "1.3.61"
-//    id("org.jetbrains.intellij") version "0.4.10"
+    id("org.beryx.jlink") version "2.17.0"
     id("org.openjfx.javafxplugin") version "0.0.8"
-    id("org.beryx.jlink") version "2.16.4"
     id("de.fayard.refreshVersions") version "0.8.6"
+    id("com.gluonhq.client-gradle-plugin") version "0.0.13"
 }
 
 val entrypoint = "tracejump/org.acejump.tracejump.MainKt"
@@ -17,7 +17,10 @@ application {
     mainClassName = entrypoint
 }
 
+val javaVersion = JavaVersion.VERSION_11.toString()
+
 javafx {
+    version = javaVersion
     modules("javafx.controls")
 }
 
@@ -39,14 +42,8 @@ dependencies {
 //    implementation("org.apache.lucene:lucene-queryparser:_")
 }
 
-//intellij {
-//    pluginName = "AceJump"
-//    updateSinceUntilBuild = false
-//    setPlugins("java")
-//}
-
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = javaVersion
 }
 
 jlink {
