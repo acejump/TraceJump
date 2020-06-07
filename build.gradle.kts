@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    `maven-publish`
     idea apply true
     kotlin("jvm") version "1.3.72"
     id("org.beryx.jlink") version "2.19.0"
@@ -51,49 +50,12 @@ jlink {
         name = "hello"
     }
     jpackage {
-        jpackageHome = "/Users/breandan/Downloads/jdk-14.jdk/Contents/Home/"
         outputDir = "my-packaging"
         imageName = "TraceJump"
         installerName = "TraceJumpInstaller"
         installerType = "dmg"
-        appVersion = "0.1"
+        appVersion = project.version.toString()
         description = "Mixed reality trace link navigator"
     }
     addExtraDependencies("javafx")
-}
-
-publishing {
-    publications.create<MavenPublication>("default") {
-        pom {
-            description.set("Mixed reality trace link navigator")
-            name.set("TraceJump")
-            url.set("https://github.com/acejump/tracejump")
-            developers {
-                developer {
-                    id.set("Breandan Considine")
-                    name.set("Breandan Considine")
-                    email.set("bre@ndan.co")
-                    organization.set("Université de Montréal")
-                }
-            }
-            scm {
-                url.set("https://github.com/acejump/tracejump")
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            setUrl("https://maven.pkg.github.com/acejump/tracejump")
-            credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("GPR_API_KEY")
-            }
-        }
-    }
-    publications {
-        register("gpr", MavenPublication::class) {
-            from(components["java"])
-        }
-    }
 }
