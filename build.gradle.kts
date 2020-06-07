@@ -4,11 +4,11 @@ plugins {
     application
     `maven-publish`
     idea apply true
-    kotlin("jvm") version "1.3.70"
-    id("org.beryx.jlink") version "2.17.0"
+    kotlin("jvm") version "1.3.72"
+    id("org.beryx.jlink") version "2.19.1"
     id("org.openjfx.javafxplugin") version "0.0.8"
     id("de.fayard.refreshVersions") version "0.8.6"
-    id("com.gluonhq.client-gradle-plugin") version "0.0.13"
+    id("com.gluonhq.client-gradle-plugin") version "0.1.27"
 }
 
 val entrypoint = "tracejump/org.acejump.tracejump.MainKt"
@@ -25,7 +25,7 @@ javafx {
 }
 
 group = "org.tracejump"
-version = "0.1-SNAPSHOT"
+version = "0.2-SNAPSHOT"
 
 repositories { mavenCentral() }
 
