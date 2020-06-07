@@ -5,7 +5,7 @@ plugins {
     `maven-publish`
     idea apply true
     kotlin("jvm") version "1.3.72"
-    id("org.beryx.jlink") version "2.19.1"
+    id("org.beryx.jlink") version "2.19.0"
     id("org.openjfx.javafxplugin") version "0.0.8"
     id("de.fayard.refreshVersions") version "0.8.6"
     id("com.gluonhq.client-gradle-plugin") version "0.1.27"
