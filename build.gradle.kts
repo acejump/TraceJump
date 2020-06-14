@@ -1,5 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+    repositories {
+        maven("https://jitpack.io")
+    }
+    dependencies {
+        classpath("com.github.siordache-forks:javafx-gradle-plugin:0.0.9-rc1")
+    }
+}
+
 plugins {
     application
     idea apply true
