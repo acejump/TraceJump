@@ -7,7 +7,7 @@ import javafx.scene.text.Font
 import org.acejump.tracejump.Menu.SearchProvider.values
 
 object Menu {
-    val logoWidth = 100.0
+    const val logoWidth = 100.0
 
     enum class SearchProvider(val key: Char, val url: String) {
         GOOGLE('g', "https://google.com/search?q="),

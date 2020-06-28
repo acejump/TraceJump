@@ -26,7 +26,7 @@ enum class Pattern(val string: String) {
         val NUM_TAGS: Int
             get() = NUM_CHARS * NUM_CHARS
 
-        val NUM_CHARS: Int = 36
+        const val NUM_CHARS: Int = 36
 
         val defaultTagOrder: Comparator<String> = compareBy(
             { it[0].isDigit() || it[1].isDigit() },

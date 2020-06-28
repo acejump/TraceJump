@@ -13,6 +13,8 @@ import java.awt.Rectangle
 import java.awt.Robot
 import java.awt.Toolkit
 import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.ImageIO
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.system.exitProcess
@@ -54,20 +56,28 @@ object Reader {
 
     fun fetchTargets(): Map<String, Target>? {
         val (pix, image) = getScreenContents()
-        if (!areDifferent(pix, previousScreenshot)) {
+        return if (!areDifferent(pix, previousScreenshot)) {
             lept.pixDestroy(pix)
             pix.deallocate()
-            return null
+            null
+        } else {
+            previousScreenshot?.let { lept.pixDestroy(it); it.deallocate() }
+            previousScreenshot = pix
+            lastFractDiff = fractDiff
+
+            // TODO: Maybe port this to browser, doesn't seem to work
+            // fun File.show() = ProcessBuilder("x-www-browser", path).start()
+            // val outputFile = File("/tmp/screenshot.png")
+            // ImageIO.write(image, "png", outputFile)
+            // outputFile.show()
+            // println("Wrote file")
+
+            Pattern.filterTags("").zip(parseImage(image)).toMap()
         }
-
-        previousScreenshot?.let { lept.pixDestroy(it); it.deallocate() }
-        previousScreenshot = pix
-        lastFractDiff = fractDiff
-
-        return Pattern.filterTags("").zip(parseImage(image)).toMap()
     }
 
-    private fun parseImage(img: BufferedImage) =
+
+    private fun parseImage(img: BufferedImage): List<Target> =
         apis.mapIndexed { i, api ->
             val height = img.height / cores
             Pair(imgToPix(img.getSubimage(0, i * height, img.width, height)), api)

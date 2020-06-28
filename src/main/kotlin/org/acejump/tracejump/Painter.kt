@@ -24,10 +24,12 @@ fun setStage(
         if (isLinux) {
             fullScreenExitHint = ""
             isFullScreen = true
+            isAlwaysOnTop = true
         }
         requestFocus()
     }
 }
 
-val isLinux = System.getProperty("os.name").let { "nix" in it || "nux" in it || "aix" in it }
+val isLinux = System.getProperty("os.name")
+    .let { "nix" in it || "nux" in it || "aix" in it }
 var VOFFSET = if (isLinux) 0 else 25
