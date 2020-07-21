@@ -1,22 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    repositories {
-        maven("https://jitpack.io")
-    }
-    dependencies {
-        classpath("com.github.siordache-forks:javafx-gradle-plugin:0.0.9-rc1")
-    }
-}
-
 plugins {
     application
     idea apply true
     kotlin("jvm") version "1.3.72"
     id("org.beryx.jlink") version "2.19.0"
-    id("org.openjfx.javafxplugin") version "0.0.8"
+    id("org.openjfx.javafxplugin") version "0.0.9"
     id("de.fayard.refreshVersions") version "0.8.6"
-    id("com.gluonhq.client-gradle-plugin") version "0.1.27"
+    id("com.gluonhq.client-gradle-plugin") version "0.1.28"
 }
 
 val entrypoint = "tracejump/org.acejump.tracejump.MainKt"

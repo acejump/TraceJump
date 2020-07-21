@@ -20,12 +20,10 @@ object Menu {
     }
 
     val logos: Map<SearchProvider, Image> =
-        values().map { Pair(it, Image("/$it.png",
-            logoWidth,
-            logoWidth, false, true)) }.toMap()
+        values().map { it to Image("/$it.png", logoWidth, logoWidth, false, true) }.toMap()
 
-    val modalKeyMap = (values().map { Pair(it.key, it.url) } +
-            ('1'..'6').map { Pair(it, "https://kotlinlang.org/?q=") }).toMap()
+    val modalKeyMap = (values().map { it.key to it.url } +
+            ('1'..'6').map { it to "https://kotlinlang.org/?q=" }).toMap()
 
     fun draw(gc: GraphicsContext, selectedTag: Target, width: Double, height: Double) = gc.run {
         font = Font.font("Courier", 20.0)
