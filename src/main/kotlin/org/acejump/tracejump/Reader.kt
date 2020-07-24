@@ -65,11 +65,12 @@ object Reader {
                 lastFractDiff = fractDiff
 
                 // TODO: Maybe port this to browser, doesn't seem to work
-                // fun File.show() = ProcessBuilder("x-www-browser", path).start()
-                // val outputFile = File("/tmp/screenshot.png")
-                // ImageIO.write(image, "png", outputFile)
-                // outputFile.show()
-                // println("Wrote file")
+//                fun File.show() = ProcessBuilder("x-www-browser", path).start()
+//                File("/tmp/screenshot.png").let { outputFile ->
+//                    ImageIO.write(image, "png", outputFile)
+//                    outputFile.show()
+//                    println("Wrote file")
+//                }
 
                 Pattern.filterTags("").zip(parseImage(image)).toMap()
             }

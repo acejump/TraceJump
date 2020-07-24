@@ -10,17 +10,20 @@ object Menu {
     const val logoWidth = 100.0
 
     enum class SearchProvider(val key: Char, val url: String) {
-        GOOGLE('g', "https://google.com/search?q="),
-        GITHUB('h', "https://github.com/search?type=Code&q="),
-        STACKOVERFLOW('o', "https://stackoverflow.com/search?q="),
-        SCHOLAR('s', "https://scholar.google.com/scholar?q="),
-        WIKIPEDIA('w', "https://en.wikipedia.org/wiki/Special:Search?search="),
-        TENSORFLOW('t', "https://www.tensorflow.org/s/results?q="),
-        PYTORCH('p', "https://pytorch.org/docs/stable/search.html?q=")
+        google('g', "https://google.com/search?q="),
+        github('h', "https://github.com/search?type=Code&q="),
+        stackoverflow('o', "https://stackoverflow.com/search?q="),
+        scholar('s', "https://scholar.google.com/scholar?q="),
+        wikipedia('w', "https://en.wikipedia.org/wiki/Special:Search?search="),
+        tensorflow('t', "https://www.tensorflow.org/s/results?q="),
+        pytorch('p', "https://pytorch.org/docs/stable/search.html?q=")
     }
 
+    fun getResource(name: String) = javaClass.classLoader.run {
+        getResource(name)?.toURI()?.toString() ?: getResource("/$name").toURI().toString()
+    }
     val logos: Map<SearchProvider, Image> =
-        values().map { it to Image("/$it.png", logoWidth, logoWidth, false, true) }.toMap()
+        values().map { it to Image(getResource("$it.png"), logoWidth, logoWidth, false, true) }.toMap()
 
     val modalKeyMap = (values().map { it.key to it.url } +
             ('1'..'6').map { it to "https://kotlinlang.org/?q=" }).toMap()

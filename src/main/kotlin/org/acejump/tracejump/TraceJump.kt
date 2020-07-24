@@ -78,16 +78,11 @@ class TraceJump : Application() {
 
     val mouseHandler = EventHandler<MouseEvent> { event ->
         println("Mouse clicked at: (${event.x}, ${event.y})")
-        resultMap.values
-            .firstOrNull { it.isPointInMap(event.x, event.y) }
+        resultMap.values.firstOrNull { it.isPointInMap(event.x, event.y) }
             ?.run {
                 Platform.runLater {
                     setStage(menuMouseHandler, stage) { gc ->
-                        Menu.draw(gc,
-                            this,
-                            canvas.width,
-                            canvas.height
-                        )
+                        Menu.draw(gc, this, canvas.width, canvas.height)
                     }
                 }
                 hasJumped.set(true)

@@ -10,6 +10,12 @@ plugins {
     id("com.gluonhq.client-gradle-plugin") version "0.1.28"
 }
 
+//repositories {
+//    mavenCentral()
+//    maven("https://jitpack.io")
+//    jcenter()
+//}
+
 val entrypoint = "tracejump/org.acejump.tracejump.MainKt"
 
 application {
@@ -37,6 +43,7 @@ dependencies {
     implementation("com.google.guava:guava:_")
     implementation("org.openjfx:javafx-swing:_")
     implementation("com.1stleg:jnativehook:_")
+//    implementation("com.github.kwebio:kweb-core:0.7.20")
 //    implementation("org.apache.lucene:lucene-core:_")
 //    implementation("org.apache.lucene:lucene-queryparser:_")
 }
