@@ -3,18 +3,19 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     application
     idea apply true
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4-M3"
     id("org.beryx.jlink") version "2.19.0"
     id("org.openjfx.javafxplugin") version "0.0.9"
     id("de.fayard.refreshVersions") version "0.8.6"
     id("com.gluonhq.client-gradle-plugin") version "0.1.28"
 }
 
-//repositories {
-//    mavenCentral()
-//    maven("https://jitpack.io")
-//    jcenter()
-//}
+repositories {
+    mavenCentral()
+    jcenter()
+    maven("https://jitpack.io")
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
+}
 
 val entrypoint = "tracejump/org.acejump.tracejump.MainKt"
 
