@@ -14,7 +14,6 @@ repositories {
     mavenCentral()
     jcenter()
     maven("https://jitpack.io")
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
 }
 
 val entrypoint = "tracejump/org.acejump.tracejump.MainKt"
