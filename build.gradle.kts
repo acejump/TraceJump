@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     application
     idea apply true
-    kotlin("jvm") version "1.4-M3"
+    kotlin("jvm") version "1.4.0"
     id("org.beryx.jlink") version "2.19.0"
     id("org.openjfx.javafxplugin") version "0.0.9"
     id("de.fayard.refreshVersions") version "0.8.6"
