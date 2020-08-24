@@ -1,13 +1,12 @@
+import org.apache.tools.ant.taskdefs.optional.jlink.jlink
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    idea apply true
     kotlin("jvm") version "1.4.0"
-    id("org.beryx.jlink") version "2.19.0"
+    id("org.beryx.jlink") version "2.21.3"
     id("org.openjfx.javafxplugin") version "0.0.9"
-    id("de.fayard.refreshVersions") version "0.8.6"
-    id("com.gluonhq.client-gradle-plugin") version "0.1.28"
+    id("com.gluonhq.client-gradle-plugin") version "0.1.31"
 }
 
 repositories {
@@ -16,7 +15,7 @@ repositories {
     maven("https://jitpack.io")
 }
 
-val entrypoint = "tracejump/org.acejump.tracejump.MainKt"
+val entrypoint = "org.acejump.tracejump.MainKt"
 
 application {
     mainClassName = entrypoint
@@ -32,18 +31,15 @@ javafx {
 group = "org.tracejump"
 version = "0.2-SNAPSHOT"
 
-repositories { mavenCentral() }
-
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("org.bytedeco:javacv-platform:_")
-    implementation("org.bytedeco:tesseract-platform:_")
-    implementation("org.bytedeco:leptonica-platform:_")
-    implementation("org.openjfx:javafx:_")
-    implementation("com.google.guava:guava:_")
-    implementation("org.openjfx:javafx-swing:_")
-    implementation("com.1stleg:jnativehook:_")
-//    implementation("com.github.kwebio:kweb-core:0.7.20")
+    implementation("org.bytedeco:javacv-platform:1.5.3")
+    implementation("org.bytedeco:tesseract-platform:1.5.3")
+    implementation("org.bytedeco:leptonica-platform:1.5.3")
+    implementation("org.openjfx:javafx:11.0.2")
+    implementation("com.google.guava:guava:28.1-jre")
+    implementation("org.openjfx:javafx-swing:11.0.2")
+    implementation("com.1stleg:jnativehook:2.1.0")
 //    implementation("org.apache.lucene:lucene-core:_")
 //    implementation("org.apache.lucene:lucene-queryparser:_")
 }
