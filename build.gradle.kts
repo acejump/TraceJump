@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     application
     kotlin("jvm") version "1.4.20"
-    id("org.beryx.jlink") version "2.22.3"
+    id("org.beryx.jlink") version "2.23.1"
     id("org.openjfx.javafxplugin") version "0.0.9"
     id("com.gluonhq.client-gradle-plugin") version "0.1.35"
     id("com.github.ben-manes.versions") version "0.36.0"
@@ -42,7 +42,7 @@ dependencies {
     implementation("org.bytedeco:tesseract-platform:4.1.1-1.5.4")
     implementation("org.bytedeco:leptonica-platform:1.80.0-1.5.4")
     implementation("org.openjfx:javafx:11.0.2")
-    implementation("com.google.guava:guava:30.0-jre")
+    implementation("com.google.guava:guava:30.1-jre")
     implementation("org.openjfx:javafx-swing:11.0.2")
     implementation("com.1stleg:jnativehook:2.1.0")
 //    implementation("org.apache.lucene:lucene-core:_")
