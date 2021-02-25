@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "1.4.20"
+    kotlin("jvm") version "1.4.30"
     id("org.beryx.jlink") version "2.23.1"
     id("org.openjfx.javafxplugin") version "0.0.9"
     id("com.gluonhq.client-gradle-plugin") version "0.1.35"
@@ -50,7 +50,11 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = javaVersion
+    kotlinOptions {
+        languageVersion = "1.5"
+        apiVersion = "1.5"
+        jvmTarget = javaVersion
+    }
 }
 
 jlink {
