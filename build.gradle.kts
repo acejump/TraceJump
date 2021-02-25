@@ -4,19 +4,17 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     application
     kotlin("jvm") version "1.4.30"
-    id("org.beryx.jlink") version "2.23.1"
-    id("org.openjfx.javafxplugin") version "0.0.9"
-    id("com.gluonhq.client-gradle-plugin") version "0.1.35"
     id("com.github.ben-manes.versions") version "0.36.0"
-}
 
-//val javaLangVersion = JavaLanguageVersion.of(11)
-//
-//java { toolchain { languageVersion.set(javaLangVersion) } }
+    // TODO: migrate from JFX to https://github.com/JetBrains/skiko
+    id("org.openjfx.javafxplugin") version "0.0.9"
+    // Cannot update
+    id("org.beryx.jlink") version "2.23.1"
+    id("com.gluonhq.client-gradle-plugin") version "0.1.35"
+}
 
 repositories {
     mavenCentral()
-    jcenter()
     maven("https://jitpack.io")
 }
 
