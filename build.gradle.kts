@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "1.4.30"
-    id("com.github.ben-manes.versions") version "0.36.0"
+    kotlin("jvm") version "1.5.0-M1"
+    id("com.github.ben-manes.versions") version "0.38.0"
 
     // TODO: migrate from JFX to https://github.com/JetBrains/skiko
     id("org.openjfx.javafxplugin") version "0.0.9"
@@ -48,11 +48,7 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        languageVersion = "1.5"
-        apiVersion = "1.5"
-        jvmTarget = javaVersion
-    }
+    kotlinOptions.jvmTarget = javaVersion
 }
 
 jlink {
