@@ -28,7 +28,7 @@ Select a menu option (e.g. by typing `h`) to jump into the semantic web:
 
 ## To Do
 
-* Migrate to [Kotlin Multiplatform](https://kotlinlang.org/docs/reference/multiplatform.html)/[Skiko](https://github.com/JetBrains/skiko) for multiplatform desktop support
+* Migrate to [Skija](https://github.com/JetBrains/skija)/[Skiko](https://github.com/JetBrains/skiko)/[Compose](https://github.com/JetBrains/compose-jb) for multiplatform desktop support
 * Support configurable trace link targets
 * Support context sensitive trace links
 * Support modal menu-based navigation
