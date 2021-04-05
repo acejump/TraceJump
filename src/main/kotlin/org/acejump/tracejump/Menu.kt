@@ -1,82 +1,94 @@
 package org.acejump.tracejump
 
-import javafx.scene.canvas.GraphicsContext
-import javafx.scene.image.Image
-import javafx.scene.paint.Color
-import javafx.scene.text.Font
 import org.acejump.tracejump.Menu.SearchProvider.values
+import org.jetbrains.skija.Canvas
+import org.jetbrains.skija.Image
+import org.jetbrains.skija.Paint
 
 object Menu {
-    const val logoWidth = 100.0
+  const val logoWidth = 100f
 
-    enum class SearchProvider(val key: Char, val url: String) {
-        google('g', "https://google.com/search?q="),
-        github('h', "https://github.com/search?type=Code&q="),
-        stackoverflow('o', "https://stackoverflow.com/search?q="),
-        scholar('s', "https://scholar.google.com/scholar?q="),
-        wikipedia('w', "https://en.wikipedia.org/wiki/Special:Search?search="),
-        tensorflow('t', "https://www.tensorflow.org/s/results?q="),
-        pytorch('p', "https://pytorch.org/docs/stable/search.html?q=")
-    }
+  enum class SearchProvider(val key: Char, val url: String) {
+    google('g', "https://google.com/search?q="),
+    github('h', "https://github.com/search?type=Code&q="),
+    stackoverflow('o', "https://stackoverflow.com/search?q="),
+    scholar('s', "https://scholar.google.com/scholar?q="),
+    wikipedia('w', "https://en.wikipedia.org/wiki/Special:Search?search="),
+    tensorflow('t', "https://www.tensorflow.org/s/results?q="),
+    pytorch('p', "https://pytorch.org/docs/stable/search.html?q=")
+  }
 
-    fun getResource(name: String) = javaClass.classLoader.run {
-        getResource(name)?.toURI()?.toString() ?: getResource("/$name").toURI().toString()
-    }
-    val logos: Map<SearchProvider, Image> =
-        values().map { it to Image(getResource("$it.png"), logoWidth, logoWidth, false, true) }.toMap()
+  fun readFile(name: String) =
+    javaClass.classLoader.getResource(name).readBytes()
 
-    val modalKeyMap = (values().map { it.key to it.url } +
-            ('1'..'6').map { it to "https://kotlinlang.org/?q=" }).toMap()
+  val logos: Map<SearchProvider, Image> =
+    values().associate { it to Image.makeFromEncoded(readFile("$it.png")) }
 
-    fun draw(gc: GraphicsContext, selectedTag: Target, width: Double, height: Double) = gc.run {
-        font = Font.font("Courier", 20.0)
-        fill = Color(0.5, 0.5, 0.5, 1.0)
+  val modalKeyMap = (values().map { it.key to it.url } +
+      ('1'..'6').map { it to "https://kotlinlang.org/?q=" }).toMap()
 
-        val padding = 25.0
-        val boxWidth = (logoWidth + padding)
-        val startX = width / 2.0 - logos.size * boxWidth / 2.0
-        val startY = height / 2.0 - logoWidth
-        fillRoundRect(
-            startX - padding,
-            startY - padding * 2,
-            logos.size * boxWidth + padding,
-            logoWidth + 10 * padding,
-            20.0,
-            20.0
+  // TODO: Figure out what's wrong and finish this
+  fun draw(gc: Canvas, selectedTag: Target) =
+    gc.run {
+      val padding = 25f
+      val boxWidth = (logoWidth + padding)
+      val startX = 100 / 2f - logos.size * boxWidth / 2f
+      val startY = 100 / 2f - logoWidth
+      gc.paintRectangle(
+        startX - padding,
+        startY - padding * 2,
+        logos.size * boxWidth + padding,
+        logoWidth + 10 * padding,
+        green
+      )
+      val fontHeight = 20f
+      val fontWidth = 15f
+
+      logos.entries.forEachIndexed { i, e ->
+        val bottomHeight = startY + logoWidth + padding / 2
+        drawImage(e.value, startX + boxWidth * i, startY, null)
+        val startOfTag = startX + boxWidth * i + boxWidth / 2f - 20f
+//            fill = Color(1.0, 1.0, 0.0, 1.0)
+
+        paintRectangle(
+          startOfTag, bottomHeight + 3f,
+          fontWidth, fontHeight, Paint()
         )
-        val fontHeight = 20.0
-        val fontWidth = 15.0
+//            fill = Color(0.0, 0.0, 0.0, 1.0)
+        val letter = e.key.key.toUpperCase().toString()
+        paintString(letter, startOfTag + 2, bottomHeight + fontHeight)
+      }
 
-        logos.entries.forEachIndexed { i, e ->
-            val bottomHeight = startY + logoWidth + padding / 2
-            drawImage(e.value, startX + boxWidth * i, startY)
-            val startOfTag = startX + boxWidth * i + boxWidth / 2.0 - 20.0
-            fill = Color(1.0, 1.0, 0.0, 1.0)
+      val query = selectedTag.string
+//        fill = Color(0.5, 0.5, 0.5, 1.0)
+      paintRectangle(
+        startX, startY - 20 - fontHeight + 3,
+        query.length * (fontWidth - 2.5f), fontHeight,
+        green
+      )
+//        fill = Color(0.0, 0.0, 0.0, 1.0)
+      paintString("\uD83D\uDD0E$query", startX, startY - 20)
 
-            fillRoundRect(startOfTag, bottomHeight + 3.0, fontWidth, fontHeight, 10.0, 10.0)
-            fill = Color(0.0, 0.0, 0.0, 1.0)
-            val letter = e.key.key.toUpperCase().toString()
-            fillText(letter, startOfTag + 2, bottomHeight + fontHeight)
-        }
+//        fill = Color(0.0, 0.0, 0.0, 1.0)
 
-        val query = selectedTag.string
-        fill = Color(0.5, 0.5, 0.5, 1.0)
-        fillRoundRect(startX, startY - 20 - fontHeight + 3, query.length * (fontWidth - 2.5), fontHeight, 10.0, 10.0)
-        fill = Color(0.0, 0.0, 0.0, 1.0)
-        fillText("\uD83D\uDD0E$query", startX, startY - 20)
+      val startOfResultX = startX
+      val startOfResultY = startY + logoWidth + 2 * padding
+      val words = "lorem ipsum … dolor sit … amet consectetur $query"
 
-        fill = Color(0.0, 0.0, 0.0, 1.0)
-
-        val startOfResultX = startX
-        val startOfResultY = startY + logoWidth + 2 * padding
-        val words = "lorem ipsum … dolor sit … amet consectetur $query"
-
-        ('A'..'F').forEachIndexed { i, l ->
-            fill = Color(1.0, 1.0, 0.0, 1.0)
-            fillRoundRect(startOfResultX, startOfResultY + (i * (fontHeight + 3)), fontWidth, fontHeight, 10.0, 10.0)
-            fill = Color(0.0, 0.0, 0.0, 1.0)
-            val result = words.split(" ").shuffled().joinToString(" ")
-            fillText("${i + 1} Doc.$l - $result", startOfResultX + 2, startOfResultY - 5 + ((i+1) * (fontHeight + 3)))
-        }
+      ('A'..'F').forEachIndexed { i, l ->
+//            fill = Color(1.0, 1.0, 0.0, 1.0)
+        paintRectangle(
+          startOfResultX, startOfResultY + (i * (fontHeight + 3f)),
+          fontWidth, fontHeight,
+          green
+        )
+//            fill = Color(0.0, 0.0, 0.0, 1.0)
+        val result = words.split(" ").shuffled().joinToString(" ")
+        paintString(
+          "${i + 1} Doc.$l - $result",
+          startOfResultX + 2,
+          startOfResultY - 5 + ((i + 1) * (fontHeight + 3))
+        )
+      }
     }
 }

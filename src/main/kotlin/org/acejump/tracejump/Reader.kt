@@ -13,8 +13,6 @@ import java.awt.Rectangle
 import java.awt.Robot
 import java.awt.Toolkit
 import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.system.exitProcess
@@ -40,7 +38,7 @@ object Reader {
 
     private val robot = Robot()
 
-    private fun getScreenContents(): Pair<PIX, BufferedImage> {
+    fun getScreenContents(): Pair<PIX, BufferedImage> {
         val screenRect = Rectangle(Toolkit.getDefaultToolkit().screenSize)
         val capture = robot.createScreenCapture(screenRect)
         return imgToPix(capture) to capture
@@ -63,14 +61,6 @@ object Reader {
                 previousScreenshot?.let { lept.pixDestroy(it); it.deallocate() }
                 previousScreenshot = pix
                 lastFractDiff = fractDiff
-
-                // TODO: Maybe port this to browser, doesn't seem to work
-//                fun File.show() = ProcessBuilder("x-www-browser", path).start()
-//                File("/tmp/screenshot.png").let { outputFile ->
-//                    ImageIO.write(image, "png", outputFile)
-//                    outputFile.show()
-//                    println("Wrote file")
-//                }
 
                 Pattern.filterTags("").zip(parseImage(image)).toMap()
             }
@@ -137,10 +127,10 @@ object Reader {
         val pageIt = TessResultIteratorGetPageIterator(resultIt)
         TessPageIteratorBoundingBox(pageIt, RIL_WORD, left, top, right, bottom)
 
-        val x1 = left.get().toDouble() / SCALE_FACTOR
-        val y1 = top.get().toDouble() / SCALE_FACTOR
-        val x2 = right.get().toDouble() / SCALE_FACTOR
-        val y2 = bottom.get().toDouble() / SCALE_FACTOR
+        val x1 = left.get() / SCALE_FACTOR
+        val y1 = top.get() / SCALE_FACTOR
+        val x2 = right.get() / SCALE_FACTOR
+        val y2 = bottom.get() / SCALE_FACTOR
         arrayOf(left, top, right, bottom, pageIt).forEach { it.deallocate() }
 
         return Target(outText, conf, x1, y1, x2, y2)

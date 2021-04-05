@@ -1,6 +1,5 @@
 package org.acejump.tracejump
 
-import javafx.application.Platform
 import org.jnativehook.GlobalScreen
 import org.jnativehook.NativeHookException
 import org.jnativehook.NativeInputEvent
@@ -12,7 +11,6 @@ import org.jnativehook.keyboard.NativeKeyListener
 import org.jnativehook.mouse.NativeMouseEvent
 import org.jnativehook.mouse.NativeMouseListener
 import org.jnativehook.mouse.NativeMouseMotionListener
-import java.util.*
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -21,12 +19,14 @@ import java.util.logging.Logger
 import kotlin.system.exitProcess
 
 
-class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : NativeKeyListener,
+class Listener(val traceJump: TraceJump, val takeAction: (String) -> Any) : NativeKeyListener,
     NativeMouseMotionListener, NativeMouseListener, AbstractExecutorService() {
     var ctrlDown = AtomicBoolean(false)
     var lastUpdated = 0L
+
     @Volatile
     var active = AtomicBoolean(false)
+
     @Volatile
     var query = ""
 
@@ -57,10 +57,10 @@ class Listener(val traceJump: TraceJump, val takeAction: (String) -> Unit?) : Na
             traceJump.screenWatcherThread?.resume()
         } else if (keyEvent.keyCode == VC_BACK_SLASH && ctrlDown.compareAndSet(true, false)) {
             active.set(true)
-            Platform.runLater { traceJump.paint() }
+            traceJump.tagScreen()
             traceJump.screenWatcherThread?.resume()
         } else if (keyEvent.keyCode == VC_ESCAPE) {
-            Platform.runLater { traceJump.reset() }
+            traceJump.reset()
         }
 
         Trigger(100) { traceJump.screenWatcherThread?.resume() }

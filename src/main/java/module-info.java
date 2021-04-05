@@ -1,5 +1,4 @@
 //module tracejump {
-//    requires javafx.controls;
 //    requires com.google.common;
 //    requires jnativehook;
 //    requires java.logging;
