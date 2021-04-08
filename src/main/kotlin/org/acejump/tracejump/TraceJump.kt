@@ -26,7 +26,9 @@ object TraceJump {
             println("Tag selected: ${selectedTag!!.string}")
             tagSelected = true
             openWindow?.close()
-            openWindow = setStage(makeWindow()) { gc -> Menu.draw(gc, selectedTag!!) }
+            openWindow = setStage(makeWindow()) { gc ->
+              Menu.draw(gc, selectedTag!!)
+            }
         } else if (tagSelected) {
             val lastChar = it.last()
             if (lastChar in modalKeyMap) {
@@ -40,11 +42,12 @@ object TraceJump {
         Unit
     }
 
-    fun makeWindow() = SkiaWindow().apply {
+    fun makeWindow() =
+      SkiaWindow().apply {
         isUndecorated = true
         opacity = 0.4f
         isVisible = true
-    }
+      }
 
     var resultMap: Map<String, Target> = ConcurrentHashMap()
 
