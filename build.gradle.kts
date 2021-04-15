@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   application
-  kotlin("jvm") version "1.5.0-M2"
+  kotlin("jvm") version "1.5.0-RC"
   id("com.github.ben-manes.versions") version "0.38.0"
 
   // Cannot update
@@ -50,8 +50,8 @@ dependencies {
   implementation("org.jetbrains.skiko:skiko-jvm-runtime-$target:0.2.21")
 }
 
-tasks.withType<KotlinCompile> {
-  kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+tasks.compileKotlin {
+  kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
 }
 
 jlink {
