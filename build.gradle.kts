@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   application
-  kotlin("jvm") version "1.5.0-RC"
+  kotlin("jvm") version "1.5.0"
   id("com.github.ben-manes.versions") version "0.38.0"
 
   // Cannot update
@@ -46,7 +46,7 @@ dependencies {
 
   implementation("com.1stleg:jnativehook:2.1.0") // Mouse / keyboard hook
 
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.4.3")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0-RC")
   implementation("org.jetbrains.skiko:skiko-jvm-runtime-$target:0.2.21")
 }
 
