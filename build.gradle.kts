@@ -34,8 +34,6 @@ val targetOs = when {
   else -> throw Error("Unsupported OS: $os")
 }
 
-val target = "${targetOs}-${targetArch}"
-
 dependencies {
   implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -46,8 +44,10 @@ dependencies {
 
   implementation("com.1stleg:jnativehook:2.1.0") // Mouse / keyboard hook
 
+  val target = "${targetOs}-${targetArch}"
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0-RC")
-  implementation("org.jetbrains.skiko:skiko-jvm-runtime-$target:0.2.21")
+  // UI does not does not seem to work past 0.2.26+
+  implementation("org.jetbrains.skiko:skiko-jvm-runtime-$target:0.2.25")
 }
 
 tasks.compileKotlin {
