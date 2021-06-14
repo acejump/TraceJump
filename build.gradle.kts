@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   application
-  kotlin("jvm") version "1.5.0"
-  id("com.github.ben-manes.versions") version "0.38.0"
+  kotlin("jvm") version "1.5.20-RC"
+  id("com.github.ben-manes.versions") version "0.39.0"
 
   // Cannot update
   id("org.beryx.jlink") version "2.23.1"
@@ -45,7 +45,7 @@ dependencies {
   implementation("com.1stleg:jnativehook:2.1.0") // Mouse / keyboard hook
 
   val target = "${targetOs}-${targetArch}"
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0-RC")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
   // UI does not does not seem to work past 0.2.26+
   implementation("org.jetbrains.skiko:skiko-jvm-runtime-$target:0.2.25")
 }
