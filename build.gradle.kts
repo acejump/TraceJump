@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   application
-  kotlin("jvm") version "1.5.20"
+  kotlin("jvm") version "1.5.30"
   id("com.github.ben-manes.versions") version "0.39.0"
 
   // Cannot update
@@ -38,14 +38,14 @@ dependencies {
   implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-  implementation("org.bytedeco:javacv-platform:1.5.5")
-  implementation("org.bytedeco:leptonica-platform:1.80.0-1.5.5")
-  implementation("org.bytedeco:tesseract-platform:4.1.1-1.5.5") // OCR
+  implementation("org.bytedeco:javacv-platform:1.5.6")
+  implementation("org.bytedeco:leptonica-platform:1.80.0-1.5.6")
+  implementation("org.bytedeco:tesseract-platform:4.1.1-1.5.6") // OCR
 
   implementation("com.1stleg:jnativehook:2.1.0") // Mouse / keyboard hook
 
   val target = "${targetOs}-${targetArch}"
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.0")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.5.2")
   // UI does not does not seem to work past 0.2.26+
   implementation("org.jetbrains.skiko:skiko-jvm-runtime-$target:0.2.25")
 }
