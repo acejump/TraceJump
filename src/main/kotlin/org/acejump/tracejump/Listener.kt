@@ -1,16 +1,16 @@
 package org.acejump.tracejump
 
-import org.jnativehook.GlobalScreen
-import org.jnativehook.NativeHookException
-import org.jnativehook.NativeInputEvent
-import org.jnativehook.NativeInputEvent.*
-import org.jnativehook.keyboard.NativeKeyEvent
-import org.jnativehook.keyboard.NativeKeyEvent.VC_BACK_SLASH
-import org.jnativehook.keyboard.NativeKeyEvent.VC_ESCAPE
-import org.jnativehook.keyboard.NativeKeyListener
-import org.jnativehook.mouse.NativeMouseEvent
-import org.jnativehook.mouse.NativeMouseListener
-import org.jnativehook.mouse.NativeMouseMotionListener
+import com.github.kwhat.jnativehook.GlobalScreen
+import com.github.kwhat.jnativehook.NativeHookException
+import com.github.kwhat.jnativehook.NativeInputEvent
+import com.github.kwhat.jnativehook.NativeInputEvent.*
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.VC_BACK_SLASH
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent.VC_ESCAPE
+import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
+import com.github.kwhat.jnativehook.mouse.NativeMouseEvent
+import com.github.kwhat.jnativehook.mouse.NativeMouseListener
+import com.github.kwhat.jnativehook.mouse.NativeMouseMotionListener
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
