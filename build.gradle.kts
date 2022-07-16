@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   application
-  kotlin("jvm") version "1.6.20"
+  kotlin("jvm") version "1.7.10"
   id("com.github.ben-manes.versions") version "0.42.0"
 
   // Cannot update
@@ -52,7 +52,7 @@ dependencies {
   implementation("com.github.kwhat:jnativehook:2.2.2") // Mouse / keyboard hook
 
   val target = "${targetOs}-${targetArch}"
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.1")
+  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.4")
   // UI does not does not seem to work past 0.2.26+
   implementation("org.jetbrains.skiko:skiko-jvm-runtime-$target:0.2.25")
 }
