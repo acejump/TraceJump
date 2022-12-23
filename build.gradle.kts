@@ -2,11 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   application
-  kotlin("jvm") version "1.7.10"
-  id("com.github.ben-manes.versions") version "0.42.0"
+  kotlin("jvm") version "1.8.0-RC2"
+  id("com.github.ben-manes.versions") version "0.44.0"
 
   // Cannot update
-  id("org.beryx.jlink") version "2.24.0"
+  id("org.beryx.jlink") version "2.25.0"
   id("org.bytedeco.gradle-javacpp-platform") version "1.5.7"
 }
 
